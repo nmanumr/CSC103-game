@@ -2,13 +2,13 @@
 #include <stdlib.h>
 #include <time.h>
 
- #define SIZE 3
+#define SIZE 3
 #define CS "clear"
 
- int board[SIZE][SIZE] = {0,0};
+int board[SIZE][SIZE] = {0, 0};
 int turn, x, y;
 
- void drawBoard();
+void drawBoard();
 char mark(int);
 int generateRandom();
 void getMove();
@@ -18,42 +18,45 @@ int isWon();
 int isDraw();
 int isOccupied(int);
 
- int main()
+int main()
 {
     system(CS);
     drawBoard();
     turn = generateRandom();
-    while(!isWon() && !isDraw()){
+    while (!isWon() && !isDraw())
+    {
         getMove();
         drawBoard();
     }
-    if(isDraw())
+    if (isDraw())
         printf("Game Draw\n");
     else
     {
-        printf("%c Won the Game!\n",(isWon()==1?'X':'O'));
+        printf("%c Won the Game!\n", (isWon() == 1 ? 'X' : 'O'));
     }
 
-     return 0;   
+    return 0;
 }
 
- void drawBoard()
+void drawBoard()
 {
     printf("\n");
-    for(x=0; x<SIZE; x++){
-        for(y=0; y<SIZE; y++)
+    for (x = 0; x < SIZE; x++)
+    {
+        for (y = 0; y < SIZE; y++)
         {
-            if(board[x][y]!=0)
+            if (board[x][y] != 0)
                 printf(" %-2c", mark(board[x][y]));
             else
-                printf(" %-2d", y+(x*SIZE)+1);
-            if(!(y==SIZE-1))
+                printf(" %-2d", y + (x * SIZE) + 1);
+            if (!(y == SIZE - 1))
                 printf("|");
         }
         printf("\n");
-        int lineSize = (4*SIZE)-1;
-        if(!(x==SIZE-1))
-            for(y=0;y<lineSize;y++){
+        int lineSize = (4 * SIZE) - 1;
+        if (!(x == SIZE - 1))
+            for (y = 0; y < lineSize; y++)
+            {
                 printf("-");
             }
         printf("\n");
@@ -61,59 +64,68 @@ int isOccupied(int);
     printf("\n\n");
 }
 
- int generateRandom()
+int generateRandom()
 {
     srand(time(0));
-    return (int) rand()%2+1;
+    return (int)rand() % 2 + 1;
 }
 
- int shiftTurn()
+int shiftTurn()
 {
-    turn = turn==1?2:1;
+    turn = turn == 1 ? 2 : 1;
 }
 
- char mark(int M)
+char mark(int M)
 {
     switch (M)
     {
-        case 1:
-            return 'X';
-            break;
+    case 1:
+        return 'X';
+        break;
 
-         case 2:
-            return 'O';
-            break;
+    case 2:
+        return 'O';
+        break;
 
-         default:
-            return '?';
-            break;
+    default:
+        return '?';
+        break;
     }
 }
 
- void getMove(){
-    int maxRange = SIZE*SIZE;
+void getMove()
+{
+    int maxRange = SIZE * SIZE;
     int value;
-    do{
+    do
+    {
         printf("\n%c\'s turn, Enter your choice: ", mark(turn));
-        scanf("%d",&value);
+        scanf("%d", &value);
         fflush(stdin);
-        if(value>maxRange || value<1){
-            printf("\nWrong Selection! choose between 1-%d\n",maxRange);
-        }else{
+        if (value > maxRange || value < 1)
+        {
+            printf("\nWrong Selection! choose between 1-%d\n", maxRange);
+        }
+        else
+        {
             system(CS);
-            if(isOccupied(value)){
+            if (isOccupied(value))
+            {
                 printf("\nAlready Occupied.! choose another!\n");
-            }else{
+            }
+            else
+            {
                 board[getX(value)][getY(value)] = turn;
                 shiftTurn();
             }
         }
-    }while(value>maxRange || value<1);
+    } while (value > maxRange || value < 1);
 }
 
- int getX(int value){
+int getX(int value)
+{
     y = 0;
-    while(value > SIZE)
+    while (value > SIZE)
     {
         value -= SIZE;
         y++;
@@ -121,93 +133,119 @@ int isOccupied(int);
     return y;
 }
 
- int getY(int value){
-    while(value > SIZE)
+int getY(int value)
+{
+    while (value > SIZE)
         value -= SIZE;
     return --value;
 }
 
- int isOccupied(int pos){
-    return (board[getX(pos)][getY(pos)] != 0)?1:0;
+int isOccupied(int pos)
+{
+    return (board[getX(pos)][getY(pos)] != 0) ? 1 : 0;
 }
 
- int isWon(){
+int isWon()
+{
 
-     int win = 0, mark;
+    int win = 0, mark;
 
-     //check all rows
-    for(x=0; x<SIZE; x++){
+    //check all rows
+    for (x = 0; x < SIZE; x++)
+    {
         mark = board[x][0];
-        for(y=0; y<SIZE; y++){
-            if(board[x][y]==mark){
+        for (y = 0; y < SIZE; y++)
+        {
+            if (board[x][y] == mark)
+            {
                 win = mark;
-            }else{
+            }
+            else
+            {
                 win = 0;
                 break;
             }
         }
-        if(win!=0)
+        if (win != 0)
             break;
     }
 
-     if(win != 0){
+    if (win != 0)
+    {
         return win;
     }
 
-
-     //check all coulomns
-    for(y=0; y<SIZE; y++){
+    //check all coulomns
+    for (y = 0; y < SIZE; y++)
+    {
         mark = board[0][y];
-        for(x=0; x<SIZE; x++){
-            if(board[x][y]==mark){
+        for (x = 0; x < SIZE; x++)
+        {
+            if (board[x][y] == mark)
+            {
                 win = mark;
-            }else{
+            }
+            else
+            {
                 win = 0;
                 break;
             }
         }
-        if(win!=0)
+        if (win != 0)
             break;
     }
 
-     if(win != 0){
+    if (win != 0)
+    {
         return win;
     }
 
-     //check for diagonals
+    //check for diagonals
     mark = board[0][0];
-    for(x=0;x<SIZE;x++){
-        if(board[x][x]==mark){
+    for (x = 0; x < SIZE; x++)
+    {
+        if (board[x][x] == mark)
+        {
             win = mark;
-        }else{
+        }
+        else
+        {
             win = 0;
             break;
         }
     }
-    if(win != 0){
+    if (win != 0)
+    {
         return win;
     }
 
-     mark = board[SIZE-1][0];
-    for(x=SIZE-1;x>=0;x--){
-        if(board[x][SIZE-x-1]==mark){
+    mark = board[SIZE - 1][0];
+    for (x = SIZE - 1; x >= 0; x--)
+    {
+        if (board[x][SIZE - x - 1] == mark)
+        {
             win = mark;
-        }else{
+        }
+        else
+        {
             win = 0;
             break;
         }
     }
 
-     return win;
+    return win;
 }
 
- int isDraw(){
-    for(x=1;x<(SIZE*SIZE+1);x++){
-        if(!isOccupied(x))
+int isDraw()
+{
+    for (x = 1; x < (SIZE * SIZE + 1); x++)
+    {
+        if (!isOccupied(x))
             return 0;
     }
-    if(!isWon()){
+    if (!isWon())
+    {
         return 1;
     }
     return 1;
-} 
+}
