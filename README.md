@@ -1,1 +1,6 @@
-# CSC103-game
+# Tic Tac Toe
+
+```
+# Compiling & running game
+make run
+```
