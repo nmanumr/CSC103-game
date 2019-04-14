@@ -38,6 +38,10 @@ int main()
     return 0;
 }
 
+
+/**
+ * Draw the current board
+ */
 void drawBoard()
 {
     printf("\n");
@@ -64,17 +68,29 @@ void drawBoard()
     printf("\n\n");
 }
 
+
+/**
+ * Return a random number between 0-1
+ */
 int generateRandom()
 {
     srand(time(0));
     return (int)rand() % 2 + 1;
 }
 
+
+/**
+ * shift the turn from X to O
+ */
 int shiftTurn()
 {
     turn = turn == 1 ? 2 : 1;
 }
 
+
+/**
+ * Return mark from turn number
+ */
 char mark(int M)
 {
     switch (M)
@@ -93,6 +109,10 @@ char mark(int M)
     }
 }
 
+
+/**
+ * Input a move from user
+ */
 void getMove()
 {
     int maxRange = SIZE * SIZE;
@@ -122,6 +142,10 @@ void getMove()
     } while (value > maxRange || value < 1);
 }
 
+
+/**
+ * Calculate x compoennt of given position
+ */
 int getX(int value)
 {
     y = 0;
@@ -133,6 +157,10 @@ int getX(int value)
     return y;
 }
 
+
+/**
+ * Calculate y compoennt of given position
+ */
 int getY(int value)
 {
     while (value > SIZE)
@@ -140,11 +168,19 @@ int getY(int value)
     return --value;
 }
 
+
+/**
+ * Check if a specific position is already occupied or not
+ */ 
 int isOccupied(int pos)
 {
     return (board[getX(pos)][getY(pos)] != 0) ? 1 : 0;
 }
 
+
+/**
+ * Return 1 if X won else 0
+ */
 int isWon()
 {
 
@@ -236,9 +272,13 @@ int isWon()
     return win;
 }
 
+
+/**
+ * Return 1 if game drawn else 0
+ */
 int isDraw()
 {
-    for (x = 1; x < (SIZE * SIZE + 1); x++)
+    for (x = 1; x <= SIZE * SIZE; x++)
     {
         if (!isOccupied(x))
             return 0;
