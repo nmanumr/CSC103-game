@@ -152,13 +152,13 @@ void Game_renderHeader(struct Game game)
 
 void Game_renderBoard(struct Game game)
 {
-    int top = (game.height - 2) / 2 - game.size;
-    int left = game.width / 2 - (game.size / 2) * 4;
+    int top = (game.height - 2) / 2 - game.board.size;
+    int left = game.width / 2 - (game.board.size / 2) * 4;
     gotoxy(top, left);
 
-    for (i = 0; i < game.size; i++)
+    for (i = 0; i < game.board.size; i++)
     {
-        for (j = 0; j < game.size; j++)
+        for (j = 0; j < game.board.size; j++)
         {
             if (j == 0)
                 printf("%s───", i == 0 ? "┌" : "├");
@@ -169,7 +169,7 @@ void Game_renderBoard(struct Game game)
         top++;
         gotoxy(top, left);
 
-        for (j = 0; j < game.size; j++)
+        for (j = 0; j < game.board.size; j++)
         {
             printf("│   ");
         }
@@ -178,7 +178,7 @@ void Game_renderBoard(struct Game game)
         gotoxy(top, left);
     }
 
-    for (j = 0; j < game.size; j++)
+    for (j = 0; j < game.board.size; j++)
     {
         if (j == 0)
             printf("└───");
@@ -230,7 +230,7 @@ void Game_startMainLoop(struct Game game)
     int size;
     Game_renderInputDialog(game, "Enter size of game: ", &size);
     Game_clearDialog(game);
-    game.size = size;
+    game.board.size = size;
 
     Game_renderBoard(game);
     Game_renderKeyMap(game);
