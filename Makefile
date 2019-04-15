@@ -3,5 +3,5 @@
 OUTFILE=game.out
 
 run:
-	gcc tictactoe.c -o $(OUTFILE)
+	gcc main.c -o $(OUTFILE)
 	./$(OUTFILE)
