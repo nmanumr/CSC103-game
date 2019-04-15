@@ -8,6 +8,8 @@
 #define INVERT "\e[7m"
 #define RESET "\e[0m"
 
+int i;
+
 struct Game
 {
     struct Board board;

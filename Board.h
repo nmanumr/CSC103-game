@@ -1,5 +1,7 @@
 #include "Cell.h"
 
+int i;
+
 struct Board
 {
     int size;
@@ -16,8 +18,7 @@ struct Board Board_init(int size)
 
     // intialize cells array mein empty Cell as variable
     // array intialization is not supported
-    int i = 0;
-    for (; i < size * size; i++)
+    for (i = 0; i < size * size; i++)
     {
         cells[i] = Cell_init();
     }
