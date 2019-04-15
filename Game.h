@@ -8,7 +8,8 @@
 #define INVERT "\e[7m"
 #define RESET "\e[0m"
 
-#define gotoxy(y, x) printf("\033[%d;%dH", (y), (x))
+#define gotoxy(y, x) fprintf(stdout, "\033[%d;%dH", (y), (x))
+#define clear() system("tput reset")
 
 int i, j;
 
@@ -134,20 +135,14 @@ int Game_isDrawn(struct Game game)
         }
     }
 
-    if (!Game_isWon(game)) return 1;
+    if (!Game_isWon(game))
+        return 1;
     return 1;
 }
 
 void Game_renderHeader(struct Game game)
 {
-    char header[game.width - 13];
-    int i;
-    for (i = 0; i < game.width - 13; i++)
-    {
-        header[i] = ' ';
-    }
-
-    printf("%s  Tic Tac Toe%s%s", INVERT, header, RESET);
+    printf("%s  Tic Tac Toe%*s%s", INVERT, game.width - 13, " ", RESET);
 }
 
 void Game_renderBoard(struct Game game)
@@ -190,27 +185,22 @@ void Game_renderBoard(struct Game game)
 
 void Game_renderKeyMap(struct Game game)
 {
-    gotoxy(game.height - 1, 0);
+    gotoxy(game.height - 2, 0);
     printf("q: Quite Game\t\tr: Restart Game\t\ts: Save Game\n\
-Arrrow Keys: Move Selection\t space: Make Selection");
+Arrrow Keys: Move Selection\t space: Make Selection\n");
 }
 
 void Game_render(struct Game game)
 {
-    system("clear");
+    clear();
     Game_renderHeader(game);
-    Game_renderKeyMap(game);
 }
 
 void Game_renderInputDialog(struct Game game, char str[], int *var_addr)
 {
-    char header[game.width - 21];
-    for (i = 0; i < game.width - 21; i++)
-        header[i] = ' ';
-
-    gotoxy(game.height - 2, 0);
-    printf("%s %s%s", INVERT, str, header);
-    gotoxy(game.height - 2, 22);
+    gotoxy(game.height - 3, 0);
+    printf("%s %s%*s", INVERT, str, game.width - 21, " ");
+    gotoxy(game.height - 3, 22);
     scanf("%d", var_addr);
 }
 
@@ -234,6 +224,7 @@ void Game_startMainLoop(struct Game game)
 
     Game_renderBoard(game);
     Game_renderKeyMap(game);
+
     while (1)
     {
     }
