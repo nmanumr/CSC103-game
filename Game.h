@@ -125,15 +125,16 @@ int Game_isWon(struct Game game)
 int Game_isDrawn(struct Game game)
 {
     int x, y, SIZE = game.board.size;
-    for (x = 1; x < SIZE * SIZE; x++)
+    for (x = 0; x < SIZE; x++)
     {
-        if (!isOccupied(x)) //TODO: update
-            return 0;
+        for (y = 0; y < SIZE; y++)
+        {
+            if (Board_getCellFromXY(game.board, x, y).isEmpty)
+                return 0;
+        }
     }
-    if (!Game_isWon(game))
-    {
-        return 1;
-    }
+
+    if (!Game_isWon(game)) return 1;
     return 1;
 }
 
