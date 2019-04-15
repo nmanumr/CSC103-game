@@ -18,6 +18,70 @@ int isWon();
 int isDraw();
 int isOccupied(int);
 
+///////////////
+// Cell Class
+///////////////
+
+struct Cell
+{
+    int isEmpty;
+    char mark;
+};
+
+/**
+ * Cell Constrctutor
+ */
+struct Cell Cell_init()
+{
+    struct Cell cell = {.isEmpty = 1, .mark = '\0'};
+    return cell;
+}
+
+/**
+ * Marks a cell with X or O and set it as non-empty
+ */
+void Cell_markCell(struct Cell cell, char mark)
+{
+    cell.mark = mark;
+    cell.isEmpty = 0;
+}
+
+
+/////////////////
+// Board Class
+/////////////////
+
+struct Board
+{
+    int size;
+    struct Cell cells;
+    char turn;
+};
+
+/**
+ * Board Constructor
+ */
+struct Board Board_init(int size)
+{
+    struct Board board = {.size = size};
+    int i;
+
+    for (i = 0; i < size * size; i++)
+    {
+        // board.cells[i] = Cell_init();
+    }
+    return board;
+}
+
+/**
+ * Returns a cell from given XY position
+ */
+struct Cell Board_getCellFromXY(struct Board board, int x, int y){
+    // return board.cells[board.size * y + x];
+}
+
+
+
 int main()
 {
     system(CS);
@@ -37,7 +101,6 @@ int main()
 
     return 0;
 }
-
 
 /**
  * Draw the current board
@@ -68,7 +131,6 @@ void drawBoard()
     printf("\n\n");
 }
 
-
 /**
  * Return a random number between 0-1
  */
@@ -78,7 +140,6 @@ int generateRandom()
     return (int)rand() % 2 + 1;
 }
 
-
 /**
  * shift the turn from X to O
  */
@@ -86,7 +147,6 @@ int shiftTurn()
 {
     turn = turn == 1 ? 2 : 1;
 }
-
 
 /**
  * Return mark from turn number
@@ -108,7 +168,6 @@ char mark(int M)
         break;
     }
 }
-
 
 /**
  * Input a move from user
@@ -142,7 +201,6 @@ void getMove()
     } while (value > maxRange || value < 1);
 }
 
-
 /**
  * Calculate x compoennt of given position
  */
@@ -157,7 +215,6 @@ int getX(int value)
     return y;
 }
 
-
 /**
  * Calculate y compoennt of given position
  */
@@ -168,15 +225,13 @@ int getY(int value)
     return --value;
 }
 
-
 /**
  * Check if a specific position is already occupied or not
- */ 
+ */
 int isOccupied(int pos)
 {
     return (board[getX(pos)][getY(pos)] != 0) ? 1 : 0;
 }
-
 
 /**
  * Return 1 if X won else 0
@@ -271,7 +326,6 @@ int isWon()
 
     return win;
 }
-
 
 /**
  * Return 1 if game drawn else 0
