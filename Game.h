@@ -204,8 +204,8 @@ void Game_render(struct Game game)
 
 void Game_renderInputDialog(struct Game game, char str[], int *var_addr)
 {
-    char header[game.width - 31];
-    for (i = 0; i < game.width - 31; i++)
+    char header[game.width - 21];
+    for (i = 0; i < game.width - 21; i++)
         header[i] = ' ';
 
     gotoxy(game.height - 2, 0);
