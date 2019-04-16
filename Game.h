@@ -167,7 +167,8 @@ void Game_renderBoard(struct Game game)
 
         for (j = 0; j < game.board.size; j++)
         {
-            printf("│   ");
+            int hoved = Board_getCellFromXY(game.board, j, i).isHoved;
+            printf("│%s   %s", (hoved ? INVERT : RESET), RESET);
         }
         printf("│\n");
         top++;
@@ -205,28 +206,29 @@ void Game_clearDialog(struct Game game)
     printf("%s%*s", RESET, game.width, " ");
 }
 
-char getch(){
-    char buf=0;
-    struct termios old={0};
+char getch()
+{
+    char buf = 0;
+    struct termios old = {0};
     fflush(stdout);
 
-    if(tcgetattr(0, &old)<0)
+    if (tcgetattr(0, &old) < 0)
         perror("tcsetattr()");
 
-    old.c_lflag&=~ICANON;
-    old.c_lflag&=~ECHO;
-    old.c_cc[VMIN]=1;
-    old.c_cc[VTIME]=0;
-    if(tcsetattr(0, TCSANOW, &old)<0)
+    old.c_lflag &= ~ICANON;
+    old.c_lflag &= ~ECHO;
+    old.c_cc[VMIN] = 1;
+    old.c_cc[VTIME] = 0;
+    if (tcsetattr(0, TCSANOW, &old) < 0)
         perror("tcsetattr ICANON");
 
-    if(read(0,&buf,1)<0)
+    if (read(0, &buf, 1) < 0)
         perror("read()");
 
-    old.c_lflag|=ICANON;
-    old.c_lflag|=ECHO;
-    if(tcsetattr(0, TCSADRAIN, &old)<0)
-        perror ("tcsetattr ~ICANON");
+    old.c_lflag |= ICANON;
+    old.c_lflag |= ECHO;
+    if (tcsetattr(0, TCSADRAIN, &old) < 0)
+        perror("tcsetattr ~ICANON");
 
     return buf;
 }
@@ -252,10 +254,17 @@ void Game_startMainLoop(struct Game game)
 
     while (ch != 'q' && ch != EOF)
     {
-        if(ch == 'r')
+        if (ch == 'r')
             Game_render(game);
-        
-    
+        else if (ch == 'A')
+            Board_move(game.board, 't');
+        else if (ch == 'B')
+            Board_move(game.board, 'b');
+        else if (ch == 'C')
+            Board_move(game.board, 'r');
+        else if (ch == 'D')
+            Board_move(game.board, 'l');
+
         ch = getch();
     }
 }

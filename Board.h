@@ -34,3 +34,48 @@ struct Cell Board_getCellFromXY(struct Board board, int x, int y)
 {
     return board.cells[board.size * y + x];
 }
+
+void Board_deselect(Board board)
+{
+    board.cells[board.selected].isHoved = 0;
+}
+
+void Board_select(Board board)
+{
+    if (board.selected >= board.size * board.size)
+    {
+        board.selected = board.size * board.size - 1;
+    }
+    else if (board.selected < 0)
+    {
+        board.selected = 0;
+    }
+}
+
+/**
+ * Moves the current selection
+ * 
+ * @param dir
+ */
+void Board_move(Board board, char dir){
+    Board_deselect(board);
+    switch (dir)
+    {
+        case 't':
+            board.selected -= board.size;
+            break;
+
+        case 'b':
+            board.selected += board.size;
+            break;
+
+        case 'l':
+            board.selected -= 1;
+            break;
+        
+        case 'r':
+            board.selected += 1;
+            break;
+    }
+    Board_select(board);
+}
