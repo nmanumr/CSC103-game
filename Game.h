@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <sys/ioctl.h>
 #include <unistd.h>
+#include <termios.h>
 
 #include "Board.h"
 
@@ -186,14 +187,8 @@ void Game_renderBoard(struct Game game)
 void Game_renderKeyMap(struct Game game)
 {
     gotoxy(game.height - 2, 0);
-    printf("q: Quite Game\t\tr: Restart Game\t\ts: Save Game\n\
+    printf("q: Quit Game\t\tr: Restart Game\t\ts: Save Game\n\
 Arrrow Keys: Move Selection\t space: Make Selection\n");
-}
-
-void Game_render(struct Game game)
-{
-    clear();
-    Game_renderHeader(game);
 }
 
 void Game_renderInputDialog(struct Game game, char str[], int *var_addr)
@@ -206,17 +201,40 @@ void Game_renderInputDialog(struct Game game, char str[], int *var_addr)
 
 void Game_clearDialog(struct Game game)
 {
-    char header[game.width - 1];
-    for (i = 0; i < game.width - 1; i++)
-        header[i] = ' ';
-
-    gotoxy(game.height - 2, 0);
-    printf("%s%s", RESET, header);
+    gotoxy(game.height - 3, 0);
+    printf("%s%*s", RESET, game.width, " ");
 }
 
-void Game_startMainLoop(struct Game game)
+char getch(){
+    char buf=0;
+    struct termios old={0};
+    fflush(stdout);
+
+    if(tcgetattr(0, &old)<0)
+        perror("tcsetattr()");
+
+    old.c_lflag&=~ICANON;
+    old.c_lflag&=~ECHO;
+    old.c_cc[VMIN]=1;
+    old.c_cc[VTIME]=0;
+    if(tcsetattr(0, TCSANOW, &old)<0)
+        perror("tcsetattr ICANON");
+
+    if(read(0,&buf,1)<0)
+        perror("read()");
+
+    old.c_lflag|=ICANON;
+    old.c_lflag|=ECHO;
+    if(tcsetattr(0, TCSADRAIN, &old)<0)
+        perror ("tcsetattr ~ICANON");
+
+    return buf;
+}
+
+void Game_render(struct Game game)
 {
-    Game_render(game);
+    clear();
+    Game_renderHeader(game);
     int size;
     Game_renderInputDialog(game, "Enter size of game: ", &size);
     Game_clearDialog(game);
@@ -224,8 +242,20 @@ void Game_startMainLoop(struct Game game)
 
     Game_renderBoard(game);
     Game_renderKeyMap(game);
+}
 
-    while (1)
+void Game_startMainLoop(struct Game game)
+{
+    Game_render(game);
+
+    char ch = getch();
+
+    while (ch != 'q' && ch != EOF)
     {
+        if(ch == 'r')
+            Game_render(game);
+        
+    
+        ch = getch();
     }
 }
