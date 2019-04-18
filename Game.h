@@ -170,7 +170,7 @@ void Game_renderBoard(struct Game *game)
         for (j = 0; j < game->board.size; j++)
         {
             struct Cell cell = Board_getCellFromXY(game->board, j, i);
-            printf("│ %s%c%s ", (cell.isHoved ? INVERT : RESET), cell.mark, RESET);
+            printf("│ %s%c%s ", (cell.isHovered ? INVERT : RESET), cell.mark, RESET);
         }
         printf("│\n");
         top++;

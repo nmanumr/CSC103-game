@@ -67,7 +67,7 @@ struct Cell Board_getCellFromXY(struct Board board, int x, int y)
 
 void Board_deselect(struct Board *board)
 {
-    board->cells[board->selected].isHoved = 0;
+    board->cells[board->selected].isHovered = 0;
 }
 
 void Board_select(struct Board *board)

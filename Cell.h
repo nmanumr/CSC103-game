@@ -2,7 +2,7 @@ struct Cell
 {
     int isEmpty;
     char mark;
-    int isHoved;
+    int isHovered;
 };
 
 /**
@@ -10,7 +10,7 @@ struct Cell
  */
 struct Cell Cell_init()
 {
-    struct Cell cell = {.isEmpty = 1, .mark = ' ', .isHoved = 0};
+    struct Cell cell = {.isEmpty = 1, .mark = ' ', .isHovered = 0};
     return cell;
 }
 
@@ -25,7 +25,7 @@ void Cell_mark(struct Cell *cell, char mark)
     }
 }
 
-void Cell_hover(struct Cell* cell, int hover)
+void Cell_hover(struct Cell* cell, int isHovered)
 {
-    cell->isHoved = hover;
+    cell->isHovered = isHovered;
 }
