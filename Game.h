@@ -202,6 +202,52 @@ void Game_renderInputDialog(struct Game *game, char str[], int *var_addr)
     scanf("%d", var_addr);
 }
 
+void Game_renderWon(struct Game *game, char player)
+{
+    int top = (game->height - 2) / 2 - 3;
+    int left = (game->width) / 2 - 20;
+    gotoxy(top - 1, left);
+    printf("╔════════════════════════════════════════════╗");
+    gotoxy(top, left);
+    printf("║ %s    %s ║", player == 'X' ? XL1 : OL1, WONL1);
+    gotoxy(top + 1, left);
+    printf("║ %s    %s ║", player == 'X' ? XL2 : OL2, WONL2);
+    gotoxy(top + 2, left);
+    printf("║ %s    %s ║", player == 'X' ? XL3 : OL3, WONL3);
+    gotoxy(top + 3, left);
+    printf("║ %s    %s ║", player == 'X' ? XL4 : OL4, WONL4);
+    gotoxy(top + 4, left);
+    printf("║ %s    %s ║", player == 'X' ? XL5 : OL5, WONL5);
+    gotoxy(top + 5, left);
+    printf("║ %s    %s ║", player == 'X' ? XL6 : OL6, WONL6);
+    gotoxy(top + 6, left);
+    printf("╚════════════════════════════════════════════╝");
+    gotoxy(game->height, 0);
+}
+
+void Game_renderDrawn(struct Game *game)
+{
+    int top = (game->height - 2) / 2 - 3;
+    int left = (game->width) / 2 - 18;
+    gotoxy(top - 1, left);
+    printf("╔══════════════════════════════════════╗");
+    gotoxy(top, left);
+    printf("║ %s ║", DRAW_L1);
+    gotoxy(top + 1, left);
+    printf("║ %s ║", DRAW_L2);
+    gotoxy(top + 2, left);
+    printf("║ %s ║", DRAW_L3);
+    gotoxy(top + 3, left);
+    printf("║ %s ║", DRAW_L4);
+    gotoxy(top + 4, left);
+    printf("║ %s ║", DRAW_L5);
+    gotoxy(top + 5, left);
+    printf("║ %s ║", DRAW_L6);
+    gotoxy(top + 6, left);
+    printf("╚══════════════════════════════════════╝");
+    gotoxy(game->height, 0);
+}
+
 void Game_clearDialog(struct Game *game)
 {
     gotoxy(game->height - 3, 0);
@@ -233,23 +279,23 @@ void Game_startMainLoop(struct Game *game)
     {
         switch (ch)
         {
-            case 'r':
-                Game_render(game);
-                break;
+        case 'r':
+            Game_render(game);
+            break;
 
-            // Handle movements
-            case 'A':
-            case 'B':
-            case 'C':
-            case 'D':
-                Board_move(&game->board, ch);
-                Game_renderBoard(game);
-                break;
+        // Handle movements
+        case 'A':
+        case 'B':
+        case 'C':
+        case 'D':
+            Board_move(&game->board, ch);
+            Game_renderBoard(game);
+            break;
 
-            case ' ':
-                Board_mark(&game->board);
-                Game_renderBoard(game);
-                break;
+        case ' ':
+            Board_mark(&game->board);
+            Game_renderBoard(game);
+            break;
         }
 
         ch = getch();

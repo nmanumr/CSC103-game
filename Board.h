@@ -1,6 +1,34 @@
 #include <stdlib.h>
 #include "Cell.h"
 
+#define DRAW_L1 " ██████╗ ██████╗  █████╗ ██╗    ██╗ "
+#define DRAW_L2 " ██╔══██╗██╔══██╗██╔══██╗██║    ██║ "
+#define DRAW_L3 " ██║  ██║██████╔╝███████║██║ █╗ ██║ "
+#define DRAW_L4 " ██║  ██║██╔══██╗██╔══██║██║███╗██║ "
+#define DRAW_L5 " ██████╔╝██║  ██║██║  ██║╚███╔███╔╝ "
+#define DRAW_L6 " ╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═╝ ╚══╝╚══╝  "
+
+#define WONL1 "██╗    ██╗ ██████╗ ███╗   ██╗"
+#define WONL2 "██║    ██║██╔═══██╗████╗  ██║"
+#define WONL3 "██║ █╗ ██║██║   ██║██╔██╗ ██║"
+#define WONL4 "██║███╗██║██║   ██║██║╚██╗██║"
+#define WONL5 "╚███╔███╔╝╚██████╔╝██║ ╚████║"
+#define WONL6 " ╚══╝╚══╝  ╚═════╝ ╚═╝  ╚═══╝"
+
+#define XL1 " ██╗  ██╗"
+#define XL2 " ╚██╗██╔╝"
+#define XL3 "  ╚███╔╝ "
+#define XL4 "  ██╔██╗ "
+#define XL5 " ██╔╝ ██╗"
+#define XL6 " ╚═╝  ╚═╝"
+
+#define OL1 " ██████╗ "
+#define OL2 "██╔═══██╗"
+#define OL3 "██║   ██║"
+#define OL4 "██║   ██║"
+#define OL5 "╚██████╔╝"
+#define OL6 " ╚═════╝ "
+
 int i;
 
 struct Board
