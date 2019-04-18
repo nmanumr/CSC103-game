@@ -2,6 +2,9 @@
 #include <unistd.h> 
 #include <termios.h>
 
+/**
+ *  Equilent to getch() from Wimdows 
+ */
 char getch(){
     char buf=0;
     struct termios old={0};

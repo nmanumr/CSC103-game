@@ -25,6 +25,9 @@ void Cell_mark(struct Cell *cell, char mark)
     }
 }
 
+/**
+ *  Mark cell hovered 
+ */
 void Cell_hover(struct Cell* cell, int isHovered)
 {
     cell->isHovered = isHovered;

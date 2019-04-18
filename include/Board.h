@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include "Cell.h"
 
+// pre Defined ASCII Art
 #define DRAW_L1 " ██████╗ ██████╗  █████╗ ██╗    ██╗ "
 #define DRAW_L2 " ██╔══██╗██╔══██╗██╔══██╗██║    ██║ "
 #define DRAW_L3 " ██║  ██║██████╔╝███████║██║ █╗ ██║ "
@@ -65,11 +66,17 @@ struct Cell Board_getCellFromXY(struct Board board, int x, int y)
     return board.cells[board.size * y + x];
 }
 
+/**
+ *  Removes the hover mark
+ */
 void Board_deselect(struct Board *board)
 {
     board->cells[board->selected].isHovered = 0;
 }
 
+/**
+ *  mark cell hovered 
+ */
 void Board_select(struct Board *board)
 {
     if (board->selected >= board->size * board->size)

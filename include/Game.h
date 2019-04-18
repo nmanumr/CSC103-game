@@ -4,9 +4,11 @@
 #include <unistd.h>
 #include <termios.h>
 
+// Required Files
 #include "Board.h"
 #include "conio.h"
 
+// Colors defined
 #define INVERT "\e[7m"
 #define RESET "\e[0m"
 
@@ -22,6 +24,9 @@ struct Game
     int width;
 };
 
+/**
+ * Game Constructor
+ */
 struct Game Game_init()
 {
     // To get current window size
@@ -33,6 +38,9 @@ struct Game Game_init()
     return game;
 }
 
+/**
+ *  Checks for mark won 
+ */
 char Game_isWon(struct Game *game)
 {
 
@@ -126,6 +134,9 @@ char Game_isWon(struct Game *game)
     return win;
 }
 
+/**
+ *  Checks for Game Draw 
+ */
 int Game_isDrawn(struct Game *game)
 {
     int x, y, SIZE = game->board.size;
@@ -138,16 +149,20 @@ int Game_isDrawn(struct Game *game)
         }
     }
 
-    //if (!Game_isWon(game))
-    //    return 1;
     return 1;
 }
 
+/**
+ *  Renders the header  
+ */
 void Game_renderHeader(struct Game *game)
 {
     printf("%s  Tic Tac Toe%*s%s", INVERT, game->width - 13, " ", RESET);
 }
 
+/**
+ *  Renders the Table/board on console 
+ */
 void Game_renderBoard(struct Game *game)
 {
     int top = (game->height - 2) / 2 - game->board.size;
@@ -188,13 +203,18 @@ void Game_renderBoard(struct Game *game)
     gotoxy(game->height, 0);
 }
 
+/**
+ *  Renders Footer/KeyNotes 
+ */
 void Game_renderKeyMap(struct Game *game)
 {
     gotoxy(game->height - 2, 0);
     printf("q: Quit Game\t\tr: Restart Game\t\ts: Save Game\n\
 Arrrow Keys: Move Selection\t space: Make Selection\n");
 }
-
+/**
+ *  Renders the Enteries on table/board 
+ */
 void Game_renderInputDialog(struct Game *game, char str[], int *var_addr)
 {
     gotoxy(game->height - 3, 0);
@@ -203,6 +223,9 @@ void Game_renderInputDialog(struct Game *game, char str[], int *var_addr)
     scanf("%d", var_addr);
 }
 
+/**
+ *  Renders Mark won Splash 
+ */
 void Game_renderWon(struct Game *game, char player)
 {
     int top = (game->height - 2) / 2 - 3;
@@ -226,6 +249,9 @@ void Game_renderWon(struct Game *game, char player)
     gotoxy(game->height, 0);
 }
 
+/**
+ *  renders Drawn Splash 
+ */
 void Game_renderDrawn(struct Game *game)
 {
     int top = (game->height - 2) / 2 - 3;
@@ -249,12 +275,18 @@ void Game_renderDrawn(struct Game *game)
     gotoxy(game->height, 0);
 }
 
+/**
+ *  clears size input dialog
+ */
 void Game_clearDialog(struct Game *game)
 {
     gotoxy(game->height - 3, 0);
     printf("%s%*s", RESET, game->width, " ");
 }
 
+/**
+ *  Renders the complete game 
+ */
 void Game_render(struct Game *game)
 {
     clear();
