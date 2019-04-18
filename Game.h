@@ -33,11 +33,11 @@ struct Game Game_init()
     return game;
 }
 
-int Game_isWon(struct Game *game)
+char Game_isWon(struct Game *game)
 {
 
-    int win = 0, x, y, SIZE = game->board.size;
-    char mark;
+    int x, y, SIZE = game->board.size;
+    char mark, win;
 
     //check all rows
     for (x = 0; x < SIZE; x++)
@@ -48,26 +48,19 @@ int Game_isWon(struct Game *game)
         {
             if (Board_getCellFromXY(game->board, x, y).mark == mark)
             {
-                switch(mark){
-                    case 'X':
-                        win = 1;
-                        break;
-                    case 'O':
-                        win = 2;
-                        break;
-                }
+                win = mark;
             }
             else
             {
-                win = 0;
+                win = ' ';
                 break;
             }
         }
-        if (win != 0)
+        if (win != ' ')
             break;
     }
 
-    if (win != 0)
+    if (win != ' ')
     {
         return win;
     }
@@ -80,26 +73,19 @@ int Game_isWon(struct Game *game)
         {
             if (Board_getCellFromXY(game->board, x, y).mark == mark)
             {
-                switch(mark){
-                    case 'X':
-                        win = 1;
-                        break;
-                    case 'O':
-                        win = 2;
-                        break;
-                }
+                win = mark;
             }
             else
             {
-                win = 0;
+                win = ' ';
                 break;
             }
         }
-        if (win != 0)
+        if (win != ' ')
             break;
     }
 
-    if (win != 0)
+    if (win != ' ')
     {
         return win;
     }
@@ -110,22 +96,15 @@ int Game_isWon(struct Game *game)
     {
         if (Board_getCellFromXY(game->board, x, x).mark == mark)
         {
-            switch(mark){
-                    case 'X':
-                        win = 1;
-                        break;
-                    case 'O':
-                        win = 2;
-                        break;
-                }
+            win = mark;
         }
         else
         {
-            win = 0;
+            win = ' ';
             break;
         }
     }
-    if (win != 0)
+    if (win != ' ')
     {
         return win;
     }
@@ -135,18 +114,11 @@ int Game_isWon(struct Game *game)
     {
         if (Board_getCellFromXY(game->board, x, SIZE - x - 1).mark == mark)
         {
-            switch(mark){
-                    case 'X':
-                        win = 1;
-                        break;
-                    case 'O':
-                        win = 2;
-                        break;
-                }
+            win = mark;
         }
         else
         {
-            win = 0;
+            win = ' ';
             break;
         }
     }
@@ -166,8 +138,8 @@ int Game_isDrawn(struct Game *game)
         }
     }
 
-    if (!Game_isWon(game))
-        return 1;
+    //if (!Game_isWon(game))
+    //    return 1;
     return 1;
 }
 
@@ -278,11 +250,28 @@ void Game_startMainLoop(struct Game *game)
             case ' ':
                 Board_mark(&game->board);
                 Game_renderBoard(game);
-                //checkGameState();
                 break;
         }
 
         ch = getch();
         fflush(stdin);
     }
+}
+
+/**
+ * @return
+ * 0 for Game Continued 
+ * 1 for X WON
+ * 2 for O WON
+ * 3 for Game Draw
+ */
+int GameState(struct Game *game){
+    char win = Game_isWon(game);
+    if(win=='X')
+        return 1;
+    if(win == 'O')
+        return 2;
+    if(Game_isDrawn(game))
+        return 3;
+    return 0;
 }
