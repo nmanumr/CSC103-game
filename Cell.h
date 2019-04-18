@@ -23,7 +23,7 @@ void Cell_markCell(struct Cell cell, char mark)
     cell.isEmpty = 0;
 }
 
-void Cell_hover(struct Cell cell, int hover)
+void Cell_hover(struct Cell* cell, int hover)
 {
-    cell.isHoved = hover;
+    cell->isHoved = hover;
 }
