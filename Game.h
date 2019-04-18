@@ -5,6 +5,7 @@
 #include <termios.h>
 
 #include "Board.h"
+#include "conio.h"
 
 #define INVERT "\e[7m"
 #define RESET "\e[0m"
@@ -168,7 +169,7 @@ void Game_renderBoard(struct Game game)
         for (j = 0; j < game.board.size; j++)
         {
             int hoved = Board_getCellFromXY(game.board, j, i).isHoved;
-            printf("│%s   %s", (hoved ? INVERT : RESET), RESET);
+            printf("│ %s %s ", (hoved ? INVERT : RESET), RESET);
         }
         printf("│\n");
         top++;
@@ -206,33 +207,6 @@ void Game_clearDialog(struct Game game)
     printf("%s%*s", RESET, game.width, " ");
 }
 
-char getch()
-{
-    char buf = 0;
-    struct termios old = {0};
-    fflush(stdout);
-
-    if (tcgetattr(0, &old) < 0)
-        perror("tcsetattr()");
-
-    old.c_lflag &= ~ICANON;
-    old.c_lflag &= ~ECHO;
-    old.c_cc[VMIN] = 1;
-    old.c_cc[VTIME] = 0;
-    if (tcsetattr(0, TCSANOW, &old) < 0)
-        perror("tcsetattr ICANON");
-
-    if (read(0, &buf, 1) < 0)
-        perror("read()");
-
-    old.c_lflag |= ICANON;
-    old.c_lflag |= ECHO;
-    if (tcsetattr(0, TCSADRAIN, &old) < 0)
-        perror("tcsetattr ~ICANON");
-
-    return buf;
-}
-
 void Game_render(struct Game game)
 {
     clear();
@@ -241,6 +215,8 @@ void Game_render(struct Game game)
     Game_renderInputDialog(game, "Enter size of game: ", &size);
     Game_clearDialog(game);
     game.board = Board_init(size);
+
+    Board_select(game.board);
 
     Game_renderBoard(game);
     Game_renderKeyMap(game);
@@ -257,13 +233,25 @@ void Game_startMainLoop(struct Game game)
         if (ch == 'r')
             Game_render(game);
         else if (ch == 'A')
+        {
             Board_move(game.board, 't');
+            Game_renderBoard(game);
+        }
         else if (ch == 'B')
+        {
             Board_move(game.board, 'b');
+            Game_renderBoard(game);
+        }
         else if (ch == 'C')
+        {
             Board_move(game.board, 'r');
+            Game_renderBoard(game);
+        }
         else if (ch == 'D')
+        {
             Board_move(game.board, 'l');
+            Game_renderBoard(game);
+        }
 
         ch = getch();
     }
