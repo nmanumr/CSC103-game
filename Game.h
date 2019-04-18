@@ -33,33 +33,34 @@ struct Game Game_init()
     return game;
 }
 
-int Game_isWon(struct Game game)
+char Game_isWon(struct Game *game)
 {
 
-    int win = 0, mark, x, y, SIZE = game.board.size;
+    int x, y, SIZE = game->board.size;
+    char mark, win;
 
     //check all rows
     for (x = 0; x < SIZE; x++)
     {
         //mark = board[x][0];
-        mark = Board_getCellFromXY(game.board, x, 0).mark;
+        mark = Board_getCellFromXY(game->board, x, 0).mark;
         for (y = 0; y < SIZE; y++)
         {
-            if (Board_getCellFromXY(game.board, x, y).mark == mark)
+            if (Board_getCellFromXY(game->board, x, y).mark == mark)
             {
                 win = mark;
             }
             else
             {
-                win = 0;
+                win = ' ';
                 break;
             }
         }
-        if (win != 0)
+        if (win != ' ')
             break;
     }
 
-    if (win != 0)
+    if (win != ' ')
     {
         return win;
     }
@@ -67,57 +68,57 @@ int Game_isWon(struct Game game)
     //check all coulomns
     for (y = 0; y < SIZE; y++)
     {
-        mark = Board_getCellFromXY(game.board, 0, y).mark;
+        mark = Board_getCellFromXY(game->board, 0, y).mark;
         for (x = 0; x < SIZE; x++)
         {
-            if (Board_getCellFromXY(game.board, x, y).mark == mark)
+            if (Board_getCellFromXY(game->board, x, y).mark == mark)
             {
                 win = mark;
             }
             else
             {
-                win = 0;
+                win = ' ';
                 break;
             }
         }
-        if (win != 0)
+        if (win != ' ')
             break;
     }
 
-    if (win != 0)
+    if (win != ' ')
     {
         return win;
     }
 
     //check for diagonals
-    mark = Board_getCellFromXY(game.board, 0, 0).mark;
+    mark = Board_getCellFromXY(game->board, 0, 0).mark;
     for (x = 0; x < SIZE; x++)
     {
-        if (Board_getCellFromXY(game.board, x, x).mark == mark)
+        if (Board_getCellFromXY(game->board, x, x).mark == mark)
         {
             win = mark;
         }
         else
         {
-            win = 0;
+            win = ' ';
             break;
         }
     }
-    if (win != 0)
+    if (win != ' ')
     {
         return win;
     }
 
-    mark = Board_getCellFromXY(game.board, SIZE - 1, 0).mark;
+    mark = Board_getCellFromXY(game->board, SIZE - 1, 0).mark;
     for (x = SIZE - 1; x >= 0; x--)
     {
-        if (Board_getCellFromXY(game.board, x, SIZE - x - 1).mark == mark)
+        if (Board_getCellFromXY(game->board, x, SIZE - x - 1).mark == mark)
         {
             win = mark;
         }
         else
         {
-            win = 0;
+            win = ' ';
             break;
         }
     }
@@ -125,20 +126,20 @@ int Game_isWon(struct Game game)
     return win;
 }
 
-int Game_isDrawn(struct Game game)
+int Game_isDrawn(struct Game *game)
 {
-    int x, y, SIZE = game.board.size;
+    int x, y, SIZE = game->board.size;
     for (x = 0; x < SIZE; x++)
     {
         for (y = 0; y < SIZE; y++)
         {
-            if (Board_getCellFromXY(game.board, x, y).isEmpty)
+            if (Board_getCellFromXY(game->board, x, y).isEmpty)
                 return 0;
         }
     }
 
-    if (!Game_isWon(game))
-        return 1;
+    //if (!Game_isWon(game))
+    //    return 1;
     return 1;
 }
 
@@ -269,6 +270,28 @@ void Game_render(struct Game *game)
     Game_renderKeyMap(game);
 }
 
+/**
+ * Checks and return Current Game State
+ * @return
+ * 0 for Game Continued 
+ * 1 for X WON
+ * 2 for O WON
+ * 3 for Game Draw
+ */
+int GameState(struct Game *game){
+    char win = Game_isWon(game);
+    if(win=='X')
+        return 1;
+    if(win == 'O')
+        return 2;
+    if(Game_isDrawn(game))
+        return 3;
+    return 0;
+}
+
+/**
+ * keep updating throughout the game
+ */
 void Game_startMainLoop(struct Game *game)
 {
     Game_render(game);
@@ -278,24 +301,34 @@ void Game_startMainLoop(struct Game *game)
     while (ch != 'q' && ch != EOF)
     {
         switch (ch)
-        {
-        case 'r':
-            Game_render(game);
-            break;
+        {   
+            // Reload/Restart Game
+            case 'r':
+                Game_render(game);
+                break;
 
-        // Handle movements
-        case 'A':
-        case 'B':
-        case 'C':
-        case 'D':
-            Board_move(&game->board, ch);
-            Game_renderBoard(game);
-            break;
+            // Handle movements
+            case 'A':
+            case 'B':
+            case 'C':
+            case 'D':
+                if(GameState(game)==0){
+                    Board_move(&game->board, ch);
+                    Game_renderBoard(game);
+                }else{
+                    //Call Action
+                }
+                break;
 
-        case ' ':
-            Board_mark(&game->board);
-            Game_renderBoard(game);
-            break;
+            // Mark Selection
+            case ' ':
+                if(GameState(game)==0){
+                    Board_mark(&game->board);
+                    Game_renderBoard(game);
+                    break;
+                }else{
+                    // Call Action
+                }
         }
 
         ch = getch();
