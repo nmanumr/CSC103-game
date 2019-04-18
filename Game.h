@@ -224,41 +224,8 @@ void Game_render(struct Game *game)
     Game_renderKeyMap(game);
 }
 
-void Game_startMainLoop(struct Game *game)
-{
-    Game_render(game);
-
-    char ch = getch();
-
-    while (ch != 'q' && ch != EOF)
-    {
-        switch (ch)
-        {
-            case 'r':
-                Game_render(game);
-                break;
-
-            // Handle movements
-            case 'A':
-            case 'B':
-            case 'C':
-            case 'D':
-                Board_move(&game->board, ch);
-                Game_renderBoard(game);
-                break;
-
-            case ' ':
-                Board_mark(&game->board);
-                Game_renderBoard(game);
-                break;
-        }
-
-        ch = getch();
-        fflush(stdin);
-    }
-}
-
 /**
+ * Checks and return Current Game State
  * @return
  * 0 for Game Continued 
  * 1 for X WON
@@ -274,4 +241,51 @@ int GameState(struct Game *game){
     if(Game_isDrawn(game))
         return 3;
     return 0;
+}
+
+/**
+ * keep updating throughout the game
+ */
+void Game_startMainLoop(struct Game *game)
+{
+    Game_render(game);
+
+    char ch = getch();
+
+    while (ch != 'q' && ch != EOF)
+    {
+        switch (ch)
+        {   
+            // Reload/Restart Game
+            case 'r':
+                Game_render(game);
+                break;
+
+            // Handle movements
+            case 'A':
+            case 'B':
+            case 'C':
+            case 'D':
+                if(GameState(game)==0){
+                    Board_move(&game->board, ch);
+                    Game_renderBoard(game);
+                }else{
+                    //Call Action
+                }
+                break;
+
+            // Mark Selection
+            case ' ':
+                if(GameState(game)==0){
+                    Board_mark(&game->board);
+                    Game_renderBoard(game);
+                    break;
+                }else{
+                    // Call Action
+                }
+        }
+
+        ch = getch();
+        fflush(stdin);
+    }
 }
