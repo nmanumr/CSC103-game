@@ -240,7 +240,7 @@ void Game_render(struct Game game)
     int size;
     Game_renderInputDialog(game, "Enter size of game: ", &size);
     Game_clearDialog(game);
-    game.board.size = size;
+    game.board = Board_init(size);
 
     Game_renderBoard(game);
     Game_renderKeyMap(game);

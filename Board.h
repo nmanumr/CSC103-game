@@ -1,4 +1,5 @@
 #include "Cell.h"
+#include <stdlib.h>
 
 int i;
 
@@ -7,6 +8,7 @@ struct Board
     int size;
     struct Cell *cells;
     char turn;
+    int selected;
 };
 
 /**
@@ -14,7 +16,7 @@ struct Board
  */
 struct Board Board_init(int size)
 {
-    struct Cell cells[size * size];
+    struct Cell *cells = malloc(sizeof(Cell_init()) * size * size);
 
     // intialize cells array mein empty Cell as variable
     // array intialization is not supported
@@ -23,7 +25,7 @@ struct Board Board_init(int size)
         cells[i] = Cell_init();
     }
 
-    struct Board board = {.size = size, .cells = cells};
+    struct Board board = {.size = size, .cells = cells, .selected = 0};
     return board;
 }
 
@@ -35,12 +37,12 @@ struct Cell Board_getCellFromXY(struct Board board, int x, int y)
     return board.cells[board.size * y + x];
 }
 
-void Board_deselect(Board board)
+void Board_deselect(struct Board board)
 {
     board.cells[board.selected].isHoved = 0;
 }
 
-void Board_select(Board board)
+void Board_select(struct Board board)
 {
     if (board.selected >= board.size * board.size)
     {
@@ -57,25 +59,26 @@ void Board_select(Board board)
  * 
  * @param dir
  */
-void Board_move(Board board, char dir){
+void Board_move(struct Board board, char dir)
+{
     Board_deselect(board);
     switch (dir)
     {
-        case 't':
-            board.selected -= board.size;
-            break;
+    case 't':
+        board.selected -= board.size;
+        break;
 
-        case 'b':
-            board.selected += board.size;
-            break;
+    case 'b':
+        board.selected += board.size;
+        break;
 
-        case 'l':
-            board.selected -= 1;
-            break;
-        
-        case 'r':
-            board.selected += 1;
-            break;
+    case 'l':
+        board.selected -= 1;
+        break;
+
+    case 'r':
+        board.selected += 1;
+        break;
     }
     Board_select(board);
 }
