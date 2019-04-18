@@ -168,8 +168,8 @@ void Game_renderBoard(struct Game *game)
 
         for (j = 0; j < game->board.size; j++)
         {
-            int hoved = Board_getCellFromXY(game->board, j, i).isHoved;
-            printf("│ %s %s ", (hoved ? INVERT : RESET), RESET);
+            struct Cell cell = Board_getCellFromXY(game->board, j, i);
+            printf("│ %s%c%s ", (cell.isHoved ? INVERT : RESET), cell.mark, RESET);
         }
         printf("│\n");
         top++;
@@ -243,6 +243,11 @@ void Game_startMainLoop(struct Game *game)
             case 'C':
             case 'D':
                 Board_move(&game->board, ch);
+                Game_renderBoard(game);
+                break;
+
+            case ' ':
+                Board_mark(&game->board);
                 Game_renderBoard(game);
                 break;
         }

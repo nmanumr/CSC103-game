@@ -25,7 +25,7 @@ struct Board Board_init(int size)
         cells[i] = Cell_init();
     }
 
-    struct Board board = {.size = size, .cells = cells, .selected = 0};
+    struct Board board = {.size = size, .cells = cells, .selected = 0, .turn = 'X'};
     return board;
 }
 
@@ -58,8 +58,6 @@ void Board_select(struct Board *board)
 
 /**
  * Moves the current selection
- * 
- * @param dir
  */
 void Board_move(struct Board *board, char dir)
 {
@@ -83,4 +81,21 @@ void Board_move(struct Board *board, char dir)
         break;
     }
     Board_select(board);
+}
+
+/**
+ * Toggle player turn
+ */
+void Board_toggleTurn(struct Board *board)
+{
+    board->turn = board->turn == 'X' ? 'O' : 'X';
+}
+
+/**
+ * Mark the current selected cell
+ */
+void Board_mark(struct Board *board)
+{
+    Cell_mark(&board->cells[board->selected], board->turn);
+    Board_toggleTurn(board);
 }
