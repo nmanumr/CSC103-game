@@ -231,27 +231,20 @@ void Game_startMainLoop(struct Game *game)
 
     while (ch != 'q' && ch != EOF)
     {
-        if (ch == 'r')
-            Game_render(game);
-        else if (ch == 'A')
+        switch (ch)
         {
-            Board_move(&game->board, 't');
-            Game_renderBoard(game);
-        }
-        else if (ch == 'B')
-        {
-            Board_move(&game->board, 'b');
-            Game_renderBoard(game);
-        }
-        else if (ch == 'C')
-        {
-            Board_move(&game->board, 'r');
-            Game_renderBoard(game);
-        }
-        else if (ch == 'D')
-        {
-            Board_move(&game->board, 'l');
-            Game_renderBoard(game);
+            case 'r':
+                Game_render(game);
+                break;
+
+            // Handle movements
+            case 'A':
+            case 'B':
+            case 'C':
+            case 'D':
+                Board_move(&game->board, ch);
+                Game_renderBoard(game);
+                break;
         }
 
         ch = getch();

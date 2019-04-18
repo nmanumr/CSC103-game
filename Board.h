@@ -66,19 +66,19 @@ void Board_move(struct Board *board, char dir)
     Board_deselect(board);
     switch (dir)
     {
-    case 't':
+    case 'A':
         board->selected -= board->size;
         break;
 
-    case 'b':
+    case 'B':
         board->selected += board->size;
         break;
 
-    case 'l':
+    case 'D':
         board->selected -= 1;
         break;
 
-    case 'r':
+    case 'C':
         board->selected += 1;
         break;
     }
