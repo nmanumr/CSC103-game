@@ -52,6 +52,8 @@ void Board_select(struct Board board)
     {
         board.selected = 0;
     }
+
+    Cell_hover(&board.cells[board.selected], 1);
 }
 
 /**
