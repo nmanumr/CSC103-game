@@ -298,6 +298,8 @@ void Game_startMainLoop(struct Game *game)
 
     char ch = getch();
 
+    int gameS = 0;
+
     while (ch != 'q' && ch != EOF)
     {
         switch (ch)
@@ -312,25 +314,33 @@ void Game_startMainLoop(struct Game *game)
             case 'B':
             case 'C':
             case 'D':
-                if(GameState(game)==0){
+                if(gameS==0){
                     Board_move(&game->board, ch);
                     Game_renderBoard(game);
-                }else{
-                    //Call Action
                 }
                 break;
 
             // Mark Selection
             case ' ':
-                if(GameState(game)==0){
+                if(gameS==0){
                     Board_mark(&game->board);
                     Game_renderBoard(game);
-                    break;
-                }else{
-                    // Call Action
                 }
+                break;
         }
 
+        gameS = GameState(game);
+        switch(gameS){
+            case 1:
+                Game_renderWon(game,'X');
+                break;
+            case 2:
+                Game_renderWon(game, 'O');
+                break;
+            case 3:
+                Game_renderDrawn(game);
+                break;
+        }
         ch = getch();
         fflush(stdin);
     }
