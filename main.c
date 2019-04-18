@@ -3,6 +3,6 @@
 int main()
 {
     struct Game game = Game_init();
-    Game_startMainLoop(game);
+    Game_startMainLoop(&game);
     return 0;
 }

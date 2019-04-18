@@ -142,20 +142,20 @@ int Game_isDrawn(struct Game game)
     return 1;
 }
 
-void Game_renderHeader(struct Game game)
+void Game_renderHeader(struct Game *game)
 {
-    printf("%s  Tic Tac Toe%*s%s", INVERT, game.width - 13, " ", RESET);
+    printf("%s  Tic Tac Toe%*s%s", INVERT, game->width - 13, " ", RESET);
 }
 
-void Game_renderBoard(struct Game game)
+void Game_renderBoard(struct Game *game)
 {
-    int top = (game.height - 2) / 2 - game.board.size;
-    int left = game.width / 2 - (game.board.size / 2) * 4;
+    int top = (game->height - 2) / 2 - game->board.size;
+    int left = game->width / 2 - (game->board.size / 2) * 4;
     gotoxy(top, left);
 
-    for (i = 0; i < game.board.size; i++)
+    for (i = 0; i < game->board.size; i++)
     {
-        for (j = 0; j < game.board.size; j++)
+        for (j = 0; j < game->board.size; j++)
         {
             if (j == 0)
                 printf("%s───", i == 0 ? "┌" : "├");
@@ -166,9 +166,9 @@ void Game_renderBoard(struct Game game)
         top++;
         gotoxy(top, left);
 
-        for (j = 0; j < game.board.size; j++)
+        for (j = 0; j < game->board.size; j++)
         {
-            int hoved = Board_getCellFromXY(game.board, j, i).isHoved;
+            int hoved = Board_getCellFromXY(game->board, j, i).isHoved;
             printf("│ %s %s ", (hoved ? INVERT : RESET), RESET);
         }
         printf("│\n");
@@ -176,7 +176,7 @@ void Game_renderBoard(struct Game game)
         gotoxy(top, left);
     }
 
-    for (j = 0; j < game.board.size; j++)
+    for (j = 0; j < game->board.size; j++)
     {
         if (j == 0)
             printf("└───");
@@ -184,45 +184,46 @@ void Game_renderBoard(struct Game game)
             printf("┴───");
     }
     printf("┘\n");
+    gotoxy(game->height, 0);
 }
 
-void Game_renderKeyMap(struct Game game)
+void Game_renderKeyMap(struct Game *game)
 {
-    gotoxy(game.height - 2, 0);
+    gotoxy(game->height - 2, 0);
     printf("q: Quit Game\t\tr: Restart Game\t\ts: Save Game\n\
 Arrrow Keys: Move Selection\t space: Make Selection\n");
 }
 
-void Game_renderInputDialog(struct Game game, char str[], int *var_addr)
+void Game_renderInputDialog(struct Game *game, char str[], int *var_addr)
 {
-    gotoxy(game.height - 3, 0);
-    printf("%s %s%*s", INVERT, str, game.width - 21, " ");
-    gotoxy(game.height - 3, 22);
+    gotoxy(game->height - 3, 0);
+    printf("%s %s%*s", INVERT, str, game->width - 21, " ");
+    gotoxy(game->height - 3, 22);
     scanf("%d", var_addr);
 }
 
-void Game_clearDialog(struct Game game)
+void Game_clearDialog(struct Game *game)
 {
-    gotoxy(game.height - 3, 0);
-    printf("%s%*s", RESET, game.width, " ");
+    gotoxy(game->height - 3, 0);
+    printf("%s%*s", RESET, game->width, " ");
 }
 
-void Game_render(struct Game game)
+void Game_render(struct Game *game)
 {
     clear();
     Game_renderHeader(game);
     int size;
     Game_renderInputDialog(game, "Enter size of game: ", &size);
     Game_clearDialog(game);
-    game.board = Board_init(size);
+    game->board = Board_init(size);
 
-    Board_select(game.board);
+    Board_select(&game->board);
 
     Game_renderBoard(game);
     Game_renderKeyMap(game);
 }
 
-void Game_startMainLoop(struct Game game)
+void Game_startMainLoop(struct Game *game)
 {
     Game_render(game);
 
@@ -234,25 +235,26 @@ void Game_startMainLoop(struct Game game)
             Game_render(game);
         else if (ch == 'A')
         {
-            Board_move(game.board, 't');
+            Board_move(&game->board, 't');
             Game_renderBoard(game);
         }
         else if (ch == 'B')
         {
-            Board_move(game.board, 'b');
+            Board_move(&game->board, 'b');
             Game_renderBoard(game);
         }
         else if (ch == 'C')
         {
-            Board_move(game.board, 'r');
+            Board_move(&game->board, 'r');
             Game_renderBoard(game);
         }
         else if (ch == 'D')
         {
-            Board_move(game.board, 'l');
+            Board_move(&game->board, 'l');
             Game_renderBoard(game);
         }
 
         ch = getch();
+        fflush(stdin);
     }
 }

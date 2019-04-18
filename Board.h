@@ -37,23 +37,23 @@ struct Cell Board_getCellFromXY(struct Board board, int x, int y)
     return board.cells[board.size * y + x];
 }
 
-void Board_deselect(struct Board board)
+void Board_deselect(struct Board *board)
 {
-    board.cells[board.selected].isHoved = 0;
+    board->cells[board->selected].isHoved = 0;
 }
 
-void Board_select(struct Board board)
+void Board_select(struct Board *board)
 {
-    if (board.selected >= board.size * board.size)
+    if (board->selected >= board->size * board->size)
     {
-        board.selected = board.size * board.size - 1;
+        board->selected = board->size * board->size - 1;
     }
-    else if (board.selected < 0)
+    else if (board->selected < 0)
     {
-        board.selected = 0;
+        board->selected = 0;
     }
 
-    Cell_hover(&board.cells[board.selected], 1);
+    Cell_hover(&board->cells[board->selected], 1);
 }
 
 /**
@@ -61,25 +61,25 @@ void Board_select(struct Board board)
  * 
  * @param dir
  */
-void Board_move(struct Board board, char dir)
+void Board_move(struct Board *board, char dir)
 {
     Board_deselect(board);
     switch (dir)
     {
     case 't':
-        board.selected -= board.size;
+        board->selected -= board->size;
         break;
 
     case 'b':
-        board.selected += board.size;
+        board->selected += board->size;
         break;
 
     case 'l':
-        board.selected -= 1;
+        board->selected -= 1;
         break;
 
     case 'r':
-        board.selected += 1;
+        board->selected += 1;
         break;
     }
     Board_select(board);
