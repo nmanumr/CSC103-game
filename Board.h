@@ -1,5 +1,5 @@
-#include "Cell.h"
 #include <stdlib.h>
+#include "Cell.h"
 
 int i;
 
