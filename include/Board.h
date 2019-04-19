@@ -1,4 +1,5 @@
 #include <stdlib.h>
+
 #include "Cell.h"
 
 #define DRAW_L1 " ██████╗ ██████╗  █████╗ ██╗    ██╗ "

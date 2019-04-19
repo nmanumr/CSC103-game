@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include <sys/ioctl.h>
 #include <unistd.h>
-#include <termios.h>
 
 // Required Files
 #include "Board.h"
