@@ -1,7 +1,6 @@
 #include <stdlib.h>
 #include "Cell.h"
 
-// pre Defined ASCII Art
 #define DRAW_L1 " ██████╗ ██████╗  █████╗ ██╗    ██╗ "
 #define DRAW_L2 " ██╔══██╗██╔══██╗██╔══██╗██║    ██║ "
 #define DRAW_L3 " ██║  ██║██████╔╝███████║██║ █╗ ██║ "
@@ -32,20 +31,20 @@
 
 int i;
 
-struct Board
+typedef struct 
 {
     int size;
-    struct Cell *cells;
+    Cell *cells;
     char turn;
     int selected;
-};
+}Board;
 
 /**
  * Board Constructor
  */
-struct Board Board_init(int size)
+Board Board_init(int size)
 {
-    struct Cell *cells = malloc(sizeof(Cell_init()) * size * size);
+    Cell *cells = malloc(sizeof(Cell_init()) * size * size);
 
     // intialize cells array mein empty Cell as variable
     // array intialization is not supported
@@ -54,14 +53,14 @@ struct Board Board_init(int size)
         cells[i] = Cell_init();
     }
 
-    struct Board board = {.size = size, .cells = cells, .selected = 0, .turn = 'X'};
+    Board board = {.size = size, .cells = cells, .selected = 0, .turn = 'X'};
     return board;
 }
 
 /**
  * Returns a cell from given XY position
  */
-struct Cell Board_getCellFromXY(struct Board board, int x, int y)
+Cell Board_getCellFromXY(Board board, int x, int y)
 {
     return board.cells[board.size * y + x];
 }
@@ -69,7 +68,7 @@ struct Cell Board_getCellFromXY(struct Board board, int x, int y)
 /**
  *  Removes the hover mark
  */
-void Board_deselect(struct Board *board)
+void Board_deselect(Board *board)
 {
     board->cells[board->selected].isHovered = 0;
 }
@@ -77,7 +76,7 @@ void Board_deselect(struct Board *board)
 /**
  *  mark cell hovered 
  */
-void Board_select(struct Board *board)
+void Board_select(Board *board)
 {
     if (board->selected >= board->size * board->size)
     {
@@ -94,7 +93,7 @@ void Board_select(struct Board *board)
 /**
  * Moves the current selection
  */
-void Board_move(struct Board *board, char dir)
+void Board_move(Board *board, char dir)
 {
     Board_deselect(board);
     switch (dir)
@@ -121,7 +120,7 @@ void Board_move(struct Board *board, char dir)
 /**
  * Toggle player turn
  */
-void Board_toggleTurn(struct Board *board)
+void Board_toggleTurn(Board *board)
 {
     board->turn = board->turn == 'X' ? 'O' : 'X';
 }
@@ -129,7 +128,7 @@ void Board_toggleTurn(struct Board *board)
 /**
  * Mark the current selected cell
  */
-void Board_mark(struct Board *board)
+void Board_mark(Board *board)
 {
     Cell_mark(&board->cells[board->selected], board->turn);
     Board_toggleTurn(board);

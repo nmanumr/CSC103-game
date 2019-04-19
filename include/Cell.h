@@ -1,23 +1,23 @@
-struct Cell
+typedef struct
 {
     int isEmpty;
     char mark;
     int isHovered;
-};
+}Cell;
 
 /**
  * Cell Constrctutor
  */
-struct Cell Cell_init()
+Cell Cell_init()
 {
-    struct Cell cell = {.isEmpty = 1, .mark = ' ', .isHovered = 0};
+    Cell cell = {.isEmpty = 1, .mark = ' ', .isHovered = 0};
     return cell;
 }
 
 /**
  * Marks a cell with X or O and set it as non-empty
  */
-void Cell_mark(struct Cell *cell, char mark)
+void Cell_mark(Cell *cell, char mark)
 {
     if(cell->isEmpty){
         cell->mark = mark;
@@ -28,7 +28,7 @@ void Cell_mark(struct Cell *cell, char mark)
 /**
  *  Mark cell hovered 
  */
-void Cell_hover(struct Cell* cell, int isHovered)
+void Cell_hover(Cell* cell, int isHovered)
 {
     cell->isHovered = isHovered;
 }

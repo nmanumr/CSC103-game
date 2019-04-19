@@ -17,23 +17,23 @@
 
 int i, j;
 
-struct Game
+typedef struct
 {
-    struct Board board;
+    Board board;
     int height;
     int width;
-};
+}Game;
 
 /**
  * Game Constructor
  */
-struct Game Game_init()
+Game Game_init()
 {
     // To get current window size
     struct winsize w;
     ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
 
-    struct Game game = {.height = w.ws_row, .width = w.ws_col};
+    Game game = {.height = w.ws_row, .width = w.ws_col};
 
     return game;
 }
@@ -41,7 +41,7 @@ struct Game Game_init()
 /**
  *  Checks for mark won 
  */
-char Game_isWon(struct Game *game)
+char Game_isWon(Game *game)
 {
 
     int x, y, SIZE = game->board.size;
@@ -50,7 +50,6 @@ char Game_isWon(struct Game *game)
     //check all rows
     for (x = 0; x < SIZE; x++)
     {
-        //mark = board[x][0];
         mark = Board_getCellFromXY(game->board, x, 0).mark;
         for (y = 0; y < SIZE; y++)
         {
@@ -137,7 +136,7 @@ char Game_isWon(struct Game *game)
 /**
  *  Checks for Game Draw 
  */
-int Game_isDrawn(struct Game *game)
+int Game_isDrawn(Game *game)
 {
     int x, y, SIZE = game->board.size;
     for (x = 0; x < SIZE; x++)
@@ -155,7 +154,7 @@ int Game_isDrawn(struct Game *game)
 /**
  *  Renders the header  
  */
-void Game_renderHeader(struct Game *game)
+void Game_renderHeader(Game *game)
 {
     printf("%s  Tic Tac Toe%*s%s", INVERT, game->width - 13, " ", RESET);
 }
@@ -163,7 +162,7 @@ void Game_renderHeader(struct Game *game)
 /**
  *  Renders the Table/board on console 
  */
-void Game_renderBoard(struct Game *game)
+void Game_renderBoard(Game *game)
 {
     int top = (game->height - 2) / 2 - game->board.size;
     int left = game->width / 2 - (game->board.size / 2) * 4;
@@ -184,7 +183,7 @@ void Game_renderBoard(struct Game *game)
 
         for (j = 0; j < game->board.size; j++)
         {
-            struct Cell cell = Board_getCellFromXY(game->board, j, i);
+            Cell cell = Board_getCellFromXY(game->board, j, i);
             printf("│ %s%c%s ", (cell.isHovered ? INVERT : RESET), cell.mark, RESET);
         }
         printf("│\n");
@@ -206,7 +205,7 @@ void Game_renderBoard(struct Game *game)
 /**
  *  Renders Footer/KeyNotes 
  */
-void Game_renderKeyMap(struct Game *game)
+void Game_renderKeyMap(Game *game)
 {
     gotoxy(game->height - 2, 0);
     printf("q: Quit Game\t\tr: Restart Game\t\ts: Save Game\n\
@@ -215,7 +214,7 @@ Arrrow Keys: Move Selection\t space: Make Selection\n");
 /**
  *  Renders the Enteries on table/board 
  */
-void Game_renderInputDialog(struct Game *game, char str[], int *var_addr)
+void Game_renderInputDialog(Game *game, char str[], int *var_addr)
 {
     gotoxy(game->height - 3, 0);
     printf("%s %s%*s", INVERT, str, game->width - 21, " ");
@@ -226,7 +225,7 @@ void Game_renderInputDialog(struct Game *game, char str[], int *var_addr)
 /**
  *  Renders Mark won Splash 
  */
-void Game_renderWon(struct Game *game, char player)
+void Game_renderWon(Game *game, char player)
 {
     int top = (game->height - 2) / 2 - 3;
     int left = (game->width) / 2 - 20;
@@ -252,7 +251,7 @@ void Game_renderWon(struct Game *game, char player)
 /**
  *  renders Drawn Splash 
  */
-void Game_renderDrawn(struct Game *game)
+void Game_renderDrawn(Game *game)
 {
     int top = (game->height - 2) / 2 - 3;
     int left = (game->width) / 2 - 18;
@@ -278,7 +277,7 @@ void Game_renderDrawn(struct Game *game)
 /**
  *  clears size input dialog
  */
-void Game_clearDialog(struct Game *game)
+void Game_clearDialog(Game *game)
 {
     gotoxy(game->height - 3, 0);
     printf("%s%*s", RESET, game->width, " ");
@@ -287,7 +286,7 @@ void Game_clearDialog(struct Game *game)
 /**
  *  Renders the complete game 
  */
-void Game_render(struct Game *game)
+void Game_render(Game *game)
 {
     clear();
     Game_renderHeader(game);
@@ -310,7 +309,7 @@ void Game_render(struct Game *game)
  * 2 for O WON
  * 3 for Game Draw
  */
-int GameState(struct Game *game){
+int GameState(Game *game){
     char win = Game_isWon(game);
     if(win=='X')
         return 1;
@@ -324,7 +323,7 @@ int GameState(struct Game *game){
 /**
  * keep updating throughout the game
  */
-void Game_startMainLoop(struct Game *game)
+void Game_startMainLoop(Game *game)
 {
     Game_render(game);
 
