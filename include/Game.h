@@ -207,9 +207,12 @@ void Game_renderBoard(Game *game)
  */
 void Game_renderKeyMap(Game *game)
 {
-    gotoxy(game->height - 2, 0);
-    printf("q: Quit Game\t\tr: Restart Game\t\ts: Save Game\n\
-Arrrow Keys: Move Selection\t space: Make Selection\n");
+    gotoxy(game->height - 1, 0);
+    printf("%s q %s Quit Game\t"
+        "%s r %s Restart Game\t"
+        "%s Arrow Keys %s Move Selection\t"
+        "%s space %s Make Selection\n"
+        ,INVERT,RESET,INVERT,RESET,INVERT,RESET,INVERT,RESET);
 }
 /**
  *  Renders the Enteries on table/board 
