@@ -305,6 +305,12 @@ void Game_renderDrawn(Game *game)
     gotoxy(game->height, 0);
 }
 
+void Game_RenderTurn(Game *game){
+    gotoxy(2,game->width-10);
+    printf("Turn : %c ", game->board.turn);
+    gotoxy(game->height, 0);
+}
+
 /**
  *  clears size input dialog
  */
@@ -360,6 +366,8 @@ void Game_startMainLoop(Game *game)
 {
     Game_render(game);
 
+    Game_RenderTurn(game);
+
     char ch = getch();
 
     int gameS = 0;
@@ -389,6 +397,7 @@ void Game_startMainLoop(Game *game)
                 if(gameS==0){
                     Board_mark(&game->board);
                     Game_renderBoard(game);
+                    Game_RenderTurn(game);
                 }
                 break;
         }
