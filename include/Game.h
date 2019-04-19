@@ -226,8 +226,8 @@ void Game_renderInputDialog(Game *game, char str[], int *var_addr)
 }
 
 void Game_renderSplash(Game *game){
-    int top = (game->height - 2) / 2 - 3;
-    int left = (game->width) / 2 - 25;
+    int top = (game->height - 2) / 2 - 4;
+    int left = (game->width) / 2 - 26;
     gotoxy(top - 1, left);
     printf("╔═══════════════════════════════════════════════════╗");
     gotoxy(top, left);
@@ -243,11 +243,11 @@ void Game_renderSplash(Game *game){
     gotoxy(top + 5, left);
     printf("║ %s ║", TTT6);
     gotoxy(top + 6,left);
-    printf("║───────────────────────────────────────────────────║");
+    printf("╟───────────────────────────────────────────────────╢");
     gotoxy(top + 7,left);
-    printf("║ Created by:                         Nauman Umer & ║");
+    printf("║ Created by:                  Ameer Hamza Naveed & ║");
     gotoxy(top + 8, left);
-    printf("║                                Ameer Hamza Naveed ║");
+    printf("║                                     Nauman Umer   ║");
     gotoxy(top + 9,left);
     printf("╚═══════════════════════════════════════════════════╝");
     gotoxy(game->height, 0);
@@ -306,8 +306,8 @@ void Game_renderDrawn(Game *game)
 }
 
 void Game_RenderTurn(Game *game){
-    gotoxy(2,game->width-10);
-    printf("Turn : %c ", game->board.turn);
+    gotoxy(1,game->width-10);
+    printf("%sTurn: %c %s",INVERT, game->board.turn,RESET);
     gotoxy(game->height, 0);
 }
 
