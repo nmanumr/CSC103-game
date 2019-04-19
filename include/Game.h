@@ -21,7 +21,7 @@ typedef struct
     Board board;
     int height;
     int width;
-}Game;
+} Game;
 
 /**
  * Game Constructor
@@ -308,13 +308,14 @@ void Game_render(Game *game)
  * 2 for O WON
  * 3 for Game Draw
  */
-int GameState(Game *game){
+int GameState(Game *game)
+{
     char win = Game_isWon(game);
-    if(win=='X')
+    if (win == 'X')
         return 1;
-    if(win == 'O')
+    if (win == 'O')
         return 2;
-    if(Game_isDrawn(game))
+    if (Game_isDrawn(game))
         return 3;
     return 0;
 }
@@ -333,43 +334,46 @@ void Game_startMainLoop(Game *game)
     while (ch != 'q' && ch != EOF)
     {
         switch (ch)
-        {   
-            // Reload/Restart Game
-            case 'r':
-                Game_render(game);
-                break;
+        {
+        // Reload/Restart Game
+        case 'r':
+            Game_render(game);
+            break;
 
-            // Handle movements
-            case 'A':
-            case 'B':
-            case 'C':
-            case 'D':
-                if(gameS==0){
-                    Board_move(&game->board, ch);
-                    Game_renderBoard(game);
-                }
-                break;
+        // Handle movements
+        case 'A':
+        case 'B':
+        case 'C':
+        case 'D':
+            if (gameS == 0)
+            {
+                Board_move(&game->board, ch);
+                Game_renderBoard(game);
+            }
+            break;
 
-            // Mark Selection
-            case ' ':
-                if(gameS==0){
-                    Board_mark(&game->board);
-                    Game_renderBoard(game);
-                }
-                break;
+        // Mark Selection
+        case ' ':
+            if (gameS == 0)
+            {
+                Board_mark(&game->board);
+                Game_renderBoard(game);
+            }
+            break;
         }
 
         gameS = GameState(game);
-        switch(gameS){
-            case 1:
-                Game_renderWon(game,'X');
-                break;
-            case 2:
-                Game_renderWon(game, 'O');
-                break;
-            case 3:
-                Game_renderDrawn(game);
-                break;
+        switch (gameS)
+        {
+        case 1:
+            Game_renderWon(game, 'X');
+            break;
+        case 2:
+            Game_renderWon(game, 'O');
+            break;
+        case 3:
+            Game_renderDrawn(game);
+            break;
         }
         ch = getch();
         fflush(stdin);

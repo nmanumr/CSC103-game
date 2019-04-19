@@ -3,7 +3,7 @@ typedef struct
     int isEmpty;
     char mark;
     int isHovered;
-}Cell;
+} Cell;
 
 /**
  * Cell Constrctutor
@@ -19,7 +19,8 @@ Cell Cell_init()
  */
 int Cell_mark(Cell *cell, char mark)
 {
-    if(cell->isEmpty){
+    if (cell->isEmpty)
+    {
         cell->mark = mark;
         cell->isEmpty = 0;
         return 1;
@@ -30,7 +31,7 @@ int Cell_mark(Cell *cell, char mark)
 /**
  *  Mark cell hovered 
  */
-void Cell_hover(Cell* cell, int isHovered)
+void Cell_hover(Cell *cell, int isHovered)
 {
     cell->isHovered = isHovered;
 }
