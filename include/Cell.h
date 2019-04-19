@@ -17,12 +17,14 @@ Cell Cell_init()
 /**
  * Marks a cell with X or O and set it as non-empty
  */
-void Cell_mark(Cell *cell, char mark)
+int Cell_mark(Cell *cell, char mark)
 {
     if(cell->isEmpty){
         cell->mark = mark;
         cell->isEmpty = 0;
+        return 1;
     }
+    return 0;
 }
 
 /**

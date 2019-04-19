@@ -131,6 +131,6 @@ void Board_toggleTurn(Board *board)
  */
 void Board_mark(Board *board)
 {
-    Cell_mark(&board->cells[board->selected], board->turn);
-    Board_toggleTurn(board);
+    if(Cell_mark(&board->cells[board->selected], board->turn))
+        Board_toggleTurn(board);
 }
