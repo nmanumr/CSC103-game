@@ -394,7 +394,6 @@ void Game_startMainLoop(Game *game)
             }
             break;
 
-<<<<<<< HEAD
             // Mark Selection
             case ' ':
                 if(gameS==0){
@@ -403,16 +402,6 @@ void Game_startMainLoop(Game *game)
                     Game_RenderTurn(game);
                 }
                 break;
-=======
-        // Mark Selection
-        case ' ':
-            if (gameS == 0)
-            {
-                Board_mark(&game->board);
-                Game_renderBoard(game);
-            }
-            break;
->>>>>>> 736b7e16dbd24b7c67d72e6e1098cb7146f94830
         }
 
         gameS = GameState(game);
