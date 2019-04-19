@@ -155,6 +155,7 @@ int Game_isDrawn(Game *game)
  */
 void Game_renderHeader(Game *game)
 {
+    gotoxy(0,0);
     printf("%s  Tic Tac Toe%*s%s", INVERT, game->width - 13, " ", RESET);
 }
 
@@ -219,6 +220,34 @@ void Game_renderInputDialog(Game *game, char str[], int *var_addr)
     printf("%s %s%*s", INVERT, str, game->width - 21, " ");
     gotoxy(game->height - 3, 22);
     scanf("%d", var_addr);
+}
+
+void Game_renderSplash(Game *game){
+    int top = (game->height - 2) / 2 - 3;
+    int left = (game->width) / 2 - 25;
+    gotoxy(top - 1, left);
+    printf("╔═══════════════════════════════════════════════════╗");
+    gotoxy(top, left);
+    printf("║ %s ║", TTT1);
+    gotoxy(top + 1, left);
+    printf("║ %s ║", TTT2);
+    gotoxy(top + 2, left);
+    printf("║ %s ║", TTT3);
+    gotoxy(top + 3, left);
+    printf("║ %s ║", TTT4);
+    gotoxy(top + 4, left);
+    printf("║ %s ║", TTT5);
+    gotoxy(top + 5, left);
+    printf("║ %s ║", TTT6);
+    gotoxy(top + 6,left);
+    printf("║───────────────────────────────────────────────────║");
+    gotoxy(top + 7,left);
+    printf("║ Created by:                         Nauman Umer & ║");
+    gotoxy(top + 8, left);
+    printf("║                                Ameer Hamza Naveed ║");
+    gotoxy(top + 9,left);
+    printf("╚═══════════════════════════════════════════════════╝");
+    gotoxy(game->height, 0);
 }
 
 /**
@@ -288,10 +317,12 @@ void Game_clearDialog(Game *game)
 void Game_render(Game *game)
 {
     clear();
-    Game_renderHeader(game);
+    Game_renderSplash(game);
     int size;
     Game_renderInputDialog(game, "Enter size of game: ", &size);
     Game_clearDialog(game);
+    clear();
+    Game_renderHeader(game);
     game->board = Board_init(size);
 
     Board_select(&game->board);
