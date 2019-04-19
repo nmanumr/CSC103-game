@@ -39,13 +39,13 @@
 
 int i;
 
-typedef struct 
+typedef struct
 {
     int size;
     Cell *cells;
     char turn;
     int selected;
-}Board;
+} Board;
 
 /**
  * Board Constructor
@@ -138,6 +138,6 @@ void Board_toggleTurn(Board *board)
  */
 void Board_mark(Board *board)
 {
-    if(Cell_mark(&board->cells[board->selected], board->turn))
+    if (Cell_mark(&board->cells[board->selected], board->turn))
         Board_toggleTurn(board);
 }
