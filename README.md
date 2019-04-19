@@ -3,6 +3,9 @@
 ```
 # Compiling & running game
 make run
+
+# Compile
+make compile
 ```
 
 ## ScreenShots
