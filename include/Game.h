@@ -10,6 +10,12 @@
 // Colors defined
 #define INVERT "\e[7m"
 #define RESET "\e[0m"
+#define BLINK "\e[5m"
+#define DEBLINK "\e[25m"
+#define RED_FG "\e[31m"
+#define RED_BG "\e[41m"
+#define YLOW_FG "\e[33m"
+#define YLOW_BG "\e[43m"
 
 #define gotoxy(y, x) fprintf(stdout, "\033[%d;%dH", (y), (x))
 #define clear() system("tput reset")
@@ -155,7 +161,7 @@ int Game_isDrawn(Game *game)
  */
 void Game_renderHeader(Game *game)
 {
-    gotoxy(0,0);
+    gotoxy(0, 0);
     printf("%s  Tic Tac Toe%*s%s", INVERT, game->width - 13, " ", RESET);
 }
 
@@ -184,7 +190,13 @@ void Game_renderBoard(Game *game)
         for (j = 0; j < game->board.size; j++)
         {
             Cell cell = Board_getCellFromXY(game->board, j, i);
-            printf("│ %s%c%s ", (cell.isHovered ? INVERT : RESET), cell.mark, RESET);
+
+            if (cell.mark == 'X')
+                printf("│ %s%sX%s ", (cell.isHovered ? INVERT : RESET), RED_FG, RESET);
+            else if (cell.mark == 'O')
+                printf("│ %s%sO%s ", (cell.isHovered ? INVERT : RESET), YLOW_FG, RESET);
+            else
+                printf("│ %s%c%s ", (cell.isHovered ? INVERT : RESET), cell.mark, RESET);
         }
         printf("│\n");
         top++;
@@ -209,10 +221,10 @@ void Game_renderKeyMap(Game *game)
 {
     gotoxy(game->height - 1, 0);
     printf("%s q %s Quit Game\t"
-        "%s r %s Restart Game\t"
-        "%s Arrow Keys %s Move Selection\t"
-        "%s space %s Make Selection\n"
-        ,INVERT,RESET,INVERT,RESET,INVERT,RESET,INVERT,RESET);
+           "%s r %s Restart Game\t"
+           "%s Arrow Keys %s Move Selection\t"
+           "%s space %s Make Selection\n",
+           INVERT, RESET, INVERT, RESET, INVERT, RESET, INVERT, RESET);
 }
 /**
  *  Renders the Enteries on table/board 
@@ -225,7 +237,8 @@ void Game_renderInputDialog(Game *game, char str[], int *var_addr)
     scanf("%d", var_addr);
 }
 
-void Game_renderSplash(Game *game){
+void Game_renderSplash(Game *game)
+{
     int top = (game->height - 2) / 2 - 4;
     int left = (game->width) / 2 - 26;
     gotoxy(top - 1, left);
@@ -242,13 +255,13 @@ void Game_renderSplash(Game *game){
     printf("║ %s ║", TTT5);
     gotoxy(top + 5, left);
     printf("║ %s ║", TTT6);
-    gotoxy(top + 6,left);
+    gotoxy(top + 6, left);
     printf("╟───────────────────────────────────────────────────╢");
-    gotoxy(top + 7,left);
-    printf("║ Created by:                  Ameer Hamza Naveed & ║");
+    gotoxy(top + 7, left);
+    printf("║ \e[2mCreated by:\e[0m                  \e[1m\e[4mAmeer Hamza Naveed\e[0m \e[2m&\e[0m ║");
     gotoxy(top + 8, left);
-    printf("║                                     Nauman Umer   ║");
-    gotoxy(top + 9,left);
+    printf("║                                     \e[1m\e[4mNauman Umer\e[0m   ║");
+    gotoxy(top + 9, left);
     printf("╚═══════════════════════════════════════════════════╝");
     gotoxy(game->height, 0);
 }
@@ -305,9 +318,13 @@ void Game_renderDrawn(Game *game)
     gotoxy(game->height, 0);
 }
 
-void Game_RenderTurn(Game *game){
-    gotoxy(1,game->width-10);
-    printf("%sTurn: %c %s",INVERT, game->board.turn,RESET);
+void Game_RenderTurn(Game *game)
+{
+    gotoxy(1, game->width - 10);
+    if (game->board.turn == 'X')
+        printf("%s%s%sTurn: X %s", INVERT, BLINK, RED_BG, RESET);
+    else
+        printf("%s%s%sTurn: O %s", INVERT, BLINK, YLOW_BG, RESET);
     gotoxy(game->height, 0);
 }
 
@@ -394,14 +411,15 @@ void Game_startMainLoop(Game *game)
             }
             break;
 
-            // Mark Selection
-            case ' ':
-                if(gameS==0){
-                    Board_mark(&game->board);
-                    Game_renderBoard(game);
-                    Game_RenderTurn(game);
-                }
-                break;
+        // Mark Selection
+        case ' ':
+            if (gameS == 0)
+            {
+                Board_mark(&game->board);
+                Game_renderBoard(game);
+                Game_RenderTurn(game);
+            }
+            break;
         }
 
         gameS = GameState(game);
