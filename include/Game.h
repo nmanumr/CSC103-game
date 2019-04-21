@@ -377,6 +377,20 @@ int GameState(Game *game)
     return 0;
 }
 
+void sizeFix(Game *game){
+    struct winsize w;
+    ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
+    if((game->height != w.ws_row) || (game->width != w.ws_col)){
+        game->height = w.ws_row;
+        game->width = w.ws_col;
+        clear();
+        Game_renderHeader(game);
+        Game_RenderTurn(game);
+        Game_renderBoard(game);
+        Game_renderKeyMap(game);
+    }
+}
+
 /**
  * keep updating throughout the game
  */
@@ -392,6 +406,8 @@ void Game_startMainLoop(Game *game)
 
     while (ch != 'q' && ch != EOF)
     {
+        sizeFix(game);
+
         switch (ch)
         {
         // Reload/Restart Game
