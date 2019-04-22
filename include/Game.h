@@ -35,6 +35,9 @@ typedef struct
 ////////////////////
 // Computer Player
 
+/**
+ * Find hole in partial complete row/col and mark it
+ */
 void markPartialRow(Board *board, int row, int isVertical)
 {
     for (j = 0; j < board->size; j++)
@@ -49,6 +52,9 @@ void markPartialRow(Board *board, int row, int isVertical)
     }
 }
 
+/**
+ * Find partial complete row/col and mark it
+ */
 int getPartialCompleteRow(Board *board, int isVertical)
 {
     for (i = 0; i < board->size; i++)
@@ -86,6 +92,9 @@ int getPartialCompleteRow(Board *board, int isVertical)
     return 0;
 }
 
+/**
+ * Find hole in partial complete diagonal and mark it
+ */
 void markPartialDiagonal(Board *board, int isPrinciple)
 {
     for (i = 0; i < board->size; i++)
@@ -100,6 +109,9 @@ void markPartialDiagonal(Board *board, int isPrinciple)
     }
 }
 
+/**
+ * Find partial complete diagonal and mark it
+ */
 int markPartialCompleteDiagnal(Board *board, int isPrinciple)
 {
     char mark = Board_getCellFromXY(*board, isPrinciple ? 0 : board->size - 1, 0).mark;
@@ -128,18 +140,27 @@ int markPartialCompleteDiagnal(Board *board, int isPrinciple)
     return 0;
 }
 
+/**
+ * Checks if the oponent already marked on opposite corner
+ */
 int isOppositeCorner(Board *board, int x, int y)
 {
     char turn = board->turn == 'X' ? 'O' : 'X';
     return Board_getCellFromXY(*board, x, y).mark == turn;
 }
 
+/**
+ * marks the given cell and toggle player turn
+ */
 void markCell(Board *board, Cell *cell, char mark)
 {
     Cell_mark(cell, mark);
     Board_toggleTurn(board);
 }
 
+/**
+ * Find and mark opposite empty corner (where opponent already marked)
+ */
 int markOppositeEmptyCorner(Board *board)
 {
     if (Board_getCellFromXY(*board, 0, 0).isEmpty && isOppositeCorner(board, board->size - 1, board->size - 1))
@@ -159,6 +180,9 @@ int markOppositeEmptyCorner(Board *board)
     return 1;
 }
 
+/**
+ * Find and marks the empty corner
+ */
 int markEmptyCorner(Board *board)
 {
     if (Board_getCellFromXY(*board, 0, 0).isEmpty)
@@ -178,6 +202,9 @@ int markEmptyCorner(Board *board)
     return 1;
 }
 
+/**
+ * Find and marks on any of the empty side
+ */
 int markEmptySide(Board *board)
 {
     for (i = 1; i < board->size - 1; i++)
@@ -212,6 +239,9 @@ int markEmptySide(Board *board)
     }
 }
 
+/**
+ * Tries to calculate the best move and mark it on the board
+ */
 void markBestMove(Board *board, int height, int width)
 {
     // gotoxy(height, 0);
