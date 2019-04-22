@@ -72,7 +72,7 @@ int getPartialCompleteRow(Board *board, int isVertical)
             else if (lastMark == ' ' && cell.mark != ' ')
                 lastMark = cell.mark;
 
-            else if (lastMark != ' ' && cell.mark != ' ' && cell.mark != lastMark)
+            else if (cell.mark != ' ' && cell.mark != lastMark)
             {
                 empty = 0;
                 break;
@@ -123,7 +123,10 @@ int markPartialCompleteDiagnal(Board *board, int isPrinciple)
         if (cell.isEmpty)
             ++empty;
 
-        else if (cell.mark != mark)
+        else if (mark == ' ' && cell.mark != ' ')
+            mark = cell.mark;
+
+        else if (cell.mark != ' ' && cell.mark != mark)
         {
             empty = 0;
             break;
@@ -213,30 +216,31 @@ int markEmptySide(Board *board)
         if (Board_getCellFromXY(*board, i, 0).isEmpty)
         {
             markCell(board, Board_getCellAddrsFromXY(*board, i, 0), board->turn);
-            break;
+            return 1;
         }
 
         // left side
         else if (Board_getCellFromXY(*board, 0, i).isEmpty)
         {
             markCell(board, Board_getCellAddrsFromXY(*board, 0, i), board->turn);
-            break;
+            return 1;
         }
 
         // right side
         else if (Board_getCellFromXY(*board, board->size - 1, i).isEmpty)
         {
             markCell(board, Board_getCellAddrsFromXY(*board, board->size - 1, i), board->turn);
-            break;
+            return 1;
         }
 
         // bottom side
         else if (Board_getCellFromXY(*board, i, board->size - 1).isEmpty)
         {
             markCell(board, Board_getCellAddrsFromXY(*board, i, board->size - 1), board->turn);
-            break;
+            return 1;
         }
     }
+    return 0;
 }
 
 /**
@@ -244,8 +248,7 @@ int markEmptySide(Board *board)
  */
 void markBestMove(Board *board, int height, int width)
 {
-    // gotoxy(height, 0);
-    // printf("%s%*s", RESET, width, " ");
+    Cell centerCell = board->cells[(board->size * board->size - 1) / 2];
 
     // 1/2. Win or block winning rows/cols
     if (getPartialCompleteRow(board, 0))
@@ -262,11 +265,14 @@ void markBestMove(Board *board, int height, int width)
     // TODO: 3/4. fork or block fork
 
     // 5. take center
-    else if (board->cells[(board->size * board->size - 1) / 2].isEmpty)
+    else if (centerCell.isEmpty)
     {
         Cell_mark(&board->cells[(board->size * board->size - 1) / 2], board->turn);
         Board_toggleTurn(board);
     }
+
+    else if (centerCell.mark == 'O' && markEmptySide(board))
+        return;
 
     // 6. take opposite corner
     else if (markOppositeEmptyCorner(board))
@@ -279,8 +285,6 @@ void markBestMove(Board *board, int height, int width)
     // 8. take empty side
     else
         markEmptySide(board);
-
-    // gotoxy(height-1, 0);
 }
 
 //////////////
