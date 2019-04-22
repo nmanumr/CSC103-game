@@ -205,6 +205,17 @@ int markEmptyCorner(Board *board)
     return 1;
 }
 
+int hasRowFork(Board *board, int num, int isVert)
+{
+    for (j = 0; j < board->size; j++)
+    {
+        Cell cell = Board_getCellFromXY(*board, isVert ? j : num, isVert ? num : j);
+        if (cell.mark != 'O' && !cell.isEmpty)
+            return 0;
+    }
+    return 1;
+}
+
 /**
  * Find and marks on any of the empty side
  */
@@ -212,33 +223,37 @@ int markEmptySide(Board *board)
 {
     for (i = 1; i < board->size - 1; i++)
     {
-        // top side
-        if (Board_getCellFromXY(*board, i, 0).isEmpty)
-        {
+        if (hasRowFork(board, i, 0) && Board_getCellFromXY(*board, i, 0).isEmpty)
             markCell(board, Board_getCellAddrsFromXY(*board, i, 0), board->turn);
-            return 1;
-        }
+
+        else if (hasRowFork(board, i, 1) && Board_getCellFromXY(*board, 0, i).isEmpty)
+            markCell(board, Board_getCellAddrsFromXY(*board, 0, i), board->turn);
+
+        else if (hasRowFork(board, i, 1) && Board_getCellFromXY(*board, board->size - 1, i).isEmpty)
+            markCell(board, Board_getCellAddrsFromXY(*board, board->size - 1, i), board->turn);
+
+        else if (hasRowFork(board, i, 0) && Board_getCellFromXY(*board, i, board->size - 1).isEmpty)
+            markCell(board, Board_getCellAddrsFromXY(*board, i, board->size - 1), board->turn);
+
+        // top side
+        else if (Board_getCellFromXY(*board, i, 0).isEmpty)
+            markCell(board, Board_getCellAddrsFromXY(*board, i, 0), board->turn);
 
         // left side
         else if (Board_getCellFromXY(*board, 0, i).isEmpty)
-        {
             markCell(board, Board_getCellAddrsFromXY(*board, 0, i), board->turn);
-            return 1;
-        }
 
         // right side
         else if (Board_getCellFromXY(*board, board->size - 1, i).isEmpty)
-        {
             markCell(board, Board_getCellAddrsFromXY(*board, board->size - 1, i), board->turn);
-            return 1;
-        }
 
         // bottom side
         else if (Board_getCellFromXY(*board, i, board->size - 1).isEmpty)
-        {
             markCell(board, Board_getCellAddrsFromXY(*board, i, board->size - 1), board->turn);
-            return 1;
-        }
+
+        else
+            continue;
+        return 1;
     }
     return 0;
 }
