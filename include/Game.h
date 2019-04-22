@@ -3,6 +3,7 @@
 #include <sys/ioctl.h>
 #include <unistd.h>
 #include <string.h>
+#include <time.h>
 
 // Required Files
 #include "Board.h"
@@ -257,6 +258,7 @@ void markBestMove(Board *board, int height, int width)
  */
 Game Game_init()
 {
+    srand(time(0));
     // To get current window size
     struct winsize w;
     ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
@@ -458,8 +460,8 @@ void Game_renderKeyMap(Game *game)
 void Game_renderInputDialog(Game *game, char str[], int *var_addr)
 {
     gotoxy(game->height - 3, 0);
-    printf("%s %s%*s", INVERT, str, game->width - strlen(str), " ");
-    gotoxy(game->height - 3, strlen(str) + 2);
+    printf("%s %s%*s", INVERT, str, (int)game->width - (int)strlen(str), " ");
+    gotoxy(game->height - 3, (int)strlen(str) + 2);
     scanf("%d", var_addr);
 }
 
@@ -570,17 +572,16 @@ void Game_render(Game *game)
 {
     clear();
     Game_renderSplash(game);
-    int size, compPlayer;
+    int size, compPlayer = 0;
     Game_renderInputDialog(game, "Enter size of game: ", &size);
     Game_clearDialog(game);
     // Asking for computer player
     if (size == 3)
-    {
         Game_renderInputDialog(game, "Do you wanna play again computer (0/1): ", &compPlayer);
-        Game_clearDialog(game);
-    }
+
     clear();
     Game_renderHeader(game);
+
     game->comPlayer = compPlayer == 1 ? 1 : 0;
     game->board = Board_init(size);
 

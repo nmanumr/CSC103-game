@@ -40,6 +40,8 @@
 #define TTT5 "\e[31m    ██║██║╚████╗\e[33m██║███████╗████╗\e[34m██║██████║██████╗\e[0m"
 #define TTT6 "\e[31m    ╚═╝╚═╝ ╚═══╝\e[33m╚═╝╚══════╝╚═══╝\e[34m╚═╝╚═════╝╚═════╝\e[0m"
 
+#define randTurn() ((rand() % 2 == 0) ? 'O' : 'X')
+
 int i;
 
 typedef struct
@@ -64,7 +66,7 @@ Board Board_init(int size)
         cells[i] = Cell_init();
     }
 
-    Board board = {.size = size, .cells = cells, .selected = 0, .turn = 'X'};
+    Board board = {.size = size, .cells = cells, .selected = 0, .turn = randTurn()};
     return board;
 }
 
