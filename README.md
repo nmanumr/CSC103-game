@@ -2,7 +2,7 @@
 
 Tic Tac Toe game written in pure C with computer autoplayer support. Tested with `gcc 8.3.0` on `Ubuntu 18.10`. This should work on all bash terminals, but only tested on `xtermjs`, `konsole`, `gnome-terminal`.
 
-Online Demo: https://repl.it/repls/AnxiousDaringTrials
+Online Demo: https://repl.it/@nmanumr/Tic-Tac-Toe
 
 ## Compiling & Running 
 
