@@ -35,10 +35,10 @@
 
 #define TTT1 "\e[31m██████████╗ \e[33m██████████╗     \e[34m██████████╗   ██████╗\e[0m"
 #define TTT2 "\e[31m╚═══██╔═══╝ \e[33m╚═══██╔═══╝     \e[34m╚═══██╔═══╝   ██╔═══╝\e[0m"
-#define TTT3 "\e[31m    ██║██╗ ████╗\e[33m██║██████╗ ████╗\e[34m██║██████╗██████╗\e[0m" 
+#define TTT3 "\e[31m    ██║██╗ ████╗\e[33m██║██████╗ ████╗\e[34m██║██████╗██████╗\e[0m"
 #define TTT4 "\e[31m    ██║██║██╔══╝\e[33m██║██║ ██║██╔══╝\e[34m██║██║ ██║██╔═══╝\e[0m"
 #define TTT5 "\e[31m    ██║██║╚████╗\e[33m██║███████╗████╗\e[34m██║██████║██████╗\e[0m"
-#define TTT6 "\e[31m    ╚═╝╚═╝ ╚═══╝\e[33m╚═╝╚══════╝╚═══╝\e[34m╚═╝╚═════╝╚═════╝\e[0m" 
+#define TTT6 "\e[31m    ╚═╝╚═╝ ╚═══╝\e[33m╚═╝╚══════╝╚═══╝\e[34m╚═╝╚═════╝╚═════╝\e[0m"
 
 int i;
 
@@ -74,6 +74,11 @@ Board Board_init(int size)
 Cell Board_getCellFromXY(Board board, int x, int y)
 {
     return board.cells[board.size * y + x];
+}
+
+Cell *Board_getCellAddrsFromXY(Board board, int x, int y)
+{
+    return &board.cells[board.size * y + x];
 }
 
 /**

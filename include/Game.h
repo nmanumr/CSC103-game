@@ -29,6 +29,227 @@ typedef struct
     int width;
 } Game;
 
+////////////////////
+// Computer Player
+
+void markPartialRow(Board *board, int row, int isVertical)
+{
+    for (j = 0; j < board->size; j++)
+    {
+        Cell *cell = Board_getCellAddrsFromXY(*board, isVertical ? j : row, isVertical ? row : j);
+
+        if (cell->isEmpty)
+        {
+            Cell_mark(cell, board->turn);
+            Board_toggleTurn(board);
+        }
+    }
+}
+
+int getPartialCompleteRow(Board *board, int isVertical)
+{
+    for (i = 0; i < board->size; i++)
+    {
+        char lastMark = Board_getCellFromXY(*board, isVertical ? 0 : i, isVertical ? i : 0).mark;
+
+        int empty = 0;
+
+        for (j = 0; j < board->size; j++)
+        {
+            Cell cell = Board_getCellFromXY(*board, isVertical ? j : i, isVertical ? i : j);
+            if (cell.isEmpty)
+                ++empty;
+
+            else if (cell.mark != lastMark)
+            {
+                empty = 0;
+                break;
+            }
+
+            if (empty > 1)
+                break;
+        }
+
+        if (empty == 1)
+        {
+            markPartialRow(board, i, isVertical);
+            return 1;
+        }
+    }
+
+    return 0;
+}
+
+void markPartialDiagonal(Board *board, int isPrinciple)
+{
+    for (i = 0; i < board->size; i++)
+    {
+        Cell *cell = Board_getCellAddrsFromXY(*board, isPrinciple ? i : board->size - i - 1, i);
+
+        if (cell->isEmpty)
+        {
+            Cell_mark(cell, board->turn);
+            Board_toggleTurn(board);
+        }
+    }
+}
+
+int markPartialCompleteDiagnal(Board *board, int isPrinciple)
+{
+    char mark = Board_getCellFromXY(*board, isPrinciple ? 0 : board->size - 1, 0).mark;
+    int empty = 0;
+    for (i = 0; i < board->size; i++)
+    {
+        Cell cell = Board_getCellFromXY(*board, isPrinciple ? i : board->size - i - 1, i);
+
+        if (cell.isEmpty)
+            ++empty;
+
+        else if (cell.mark != mark)
+        {
+            empty = 0;
+            break;
+        }
+
+        if (empty > 1)
+            break;
+    }
+    if (empty == 1)
+    {
+        markPartialDiagonal(board, isPrinciple);
+        return 1;
+    }
+    return 0;
+}
+
+int isOppositeCorner(Board *board, int x, int y)
+{
+    char turn = board->turn == 'X' ? 'O' : 'X';
+    return Board_getCellFromXY(*board, x, y).mark == turn;
+}
+
+void markCell(Board *board, Cell *cell, char mark)
+{
+    Cell_mark(cell, mark);
+    Board_toggleTurn(board);
+}
+
+int markOppositeEmptyCorner(Board *board)
+{
+    if (Board_getCellFromXY(*board, 0, 0).isEmpty && isOppositeCorner(board, board->size - 1, board->size - 1))
+        markCell(board, Board_getCellAddrsFromXY(*board, 0, 0), board->turn);
+
+    else if (Board_getCellFromXY(*board, board->size - 1, 0).isEmpty && isOppositeCorner(board, 0, board->size - 1))
+        markCell(board, Board_getCellAddrsFromXY(*board, board->size - 1, 0), board->turn);
+
+    else if (Board_getCellFromXY(*board, 0, board->size - 1).isEmpty && isOppositeCorner(board, board->size - 1, 0))
+        markCell(board, Board_getCellAddrsFromXY(*board, 0, board->size - 1), board->turn);
+
+    else if (Board_getCellFromXY(*board, board->size - 1, board->size - 1).isEmpty && isOppositeCorner(board, 0, 0))
+        markCell(board, Board_getCellAddrsFromXY(*board, board->size - 1, board->size - 1), board->turn);
+
+    else
+        return 0;
+    return 1;
+}
+
+int markEmptyCorner(Board *board)
+{
+    if (Board_getCellFromXY(*board, 0, 0).isEmpty)
+        markCell(board, Board_getCellAddrsFromXY(*board, 0, 0), board->turn);
+
+    else if (Board_getCellFromXY(*board, board->size - 1, 0).isEmpty)
+        markCell(board, Board_getCellAddrsFromXY(*board, board->size - 1, 0), board->turn);
+
+    else if (Board_getCellFromXY(*board, 0, board->size - 1).isEmpty)
+        markCell(board, Board_getCellAddrsFromXY(*board, 0, board->size - 1), board->turn);
+
+    else if (Board_getCellFromXY(*board, board->size - 1, board->size - 1).isEmpty)
+        markCell(board, Board_getCellAddrsFromXY(*board, board->size - 1, board->size - 1), board->turn);
+
+    else
+        return 0;
+    return 1;
+}
+
+int markEmptySide(Board *board)
+{
+    for (i = 1; i < board->size - 1; i++)
+    {
+        // top side
+        if (Board_getCellFromXY(*board, i, 0).isEmpty)
+        {
+            markCell(board, Board_getCellAddrsFromXY(*board, i, 0), board->turn);
+            break;
+        }
+
+        // left side
+        else if (Board_getCellFromXY(*board, 0, i).isEmpty)
+        {
+            markCell(board, Board_getCellAddrsFromXY(*board, 0, i), board->turn);
+            break;
+        }
+
+        // right side
+        else if (Board_getCellFromXY(*board, board->size - 1, i).isEmpty)
+        {
+            markCell(board, Board_getCellAddrsFromXY(*board, board->size - 1, i), board->turn);
+            break;
+        }
+
+        // bottom side
+        else if (Board_getCellFromXY(*board, i, board->size - 1).isEmpty)
+        {
+            markCell(board, Board_getCellAddrsFromXY(*board, i, board->size - 1), board->turn);
+            break;
+        }
+    }
+}
+
+void markBestMove(Board *board, int height, int width)
+{
+    // gotoxy(height, 0);
+    // printf("%s%*s", RESET, width, " ");
+
+    // 1/2. Win or block winning rows/cols
+    if (getPartialCompleteRow(board, 0))
+        return;
+    else if (getPartialCompleteRow(board, 1))
+        return;
+
+    // 1/2. Win or block winning digonals
+    else if (markPartialCompleteDiagnal(board, 1))
+        return;
+    else if (markPartialCompleteDiagnal(board, 0))
+        return;
+
+    // TODO: 3/4. fork or block fork
+
+    // 5. take center
+    else if (board->cells[(board->size * board->size - 1) / 2].isEmpty)
+    {
+        Cell_mark(&board->cells[(board->size * board->size - 1) / 2], board->turn);
+        Board_toggleTurn(board);
+    }
+
+    // 6. take opposite corner
+    else if (markOppositeEmptyCorner(board))
+        return;
+
+    // 7. take empty corner
+    else if (markEmptyCorner(board))
+        return;
+
+    // 8. take empty side
+    else
+        markEmptySide(board);
+
+    // gotoxy(height-1, 0);
+}
+
+//////////////
+// Game Logic
+
 /**
  * Game Constructor
  */
@@ -155,6 +376,9 @@ int Game_isDrawn(Game *game)
 
     return 1;
 }
+
+/////////////////
+// Game Renderer
 
 /**
  *  Renders the header  
@@ -377,10 +601,12 @@ int GameState(Game *game)
     return 0;
 }
 
-void sizeFix(Game *game){
+void sizeFix(Game *game)
+{
     struct winsize w;
     ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
-    if((game->height != w.ws_row) || (game->width != w.ws_col)){
+    if ((game->height != w.ws_row) || (game->width != w.ws_col))
+    {
         game->height = w.ws_row;
         game->width = w.ws_col;
         clear();
@@ -451,6 +677,16 @@ void Game_startMainLoop(Game *game)
             Game_renderDrawn(game);
             break;
         }
+
+        if (game->board.turn == 'O' && gameS == 0)
+        {
+            markBestMove(&game->board, game->height, game->width);
+            Game_renderBoard(game);
+            Game_RenderTurn(game);
+
+            continue;
+        }
+
         ch = getch();
         fflush(stdin);
     }
