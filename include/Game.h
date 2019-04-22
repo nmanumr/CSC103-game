@@ -63,7 +63,10 @@ int getPartialCompleteRow(Board *board, int isVertical)
             if (cell.isEmpty)
                 ++empty;
 
-            else if (cell.mark != lastMark)
+            else if (lastMark == ' ' && cell.mark != ' ')
+                lastMark = cell.mark;
+
+            else if (lastMark != ' ' && cell.mark != ' ' && cell.mark != lastMark)
             {
                 empty = 0;
                 break;
@@ -460,7 +463,7 @@ void Game_renderKeyMap(Game *game)
 void Game_renderInputDialog(Game *game, char str[], int *var_addr)
 {
     gotoxy(game->height - 3, 0);
-    printf("%s %s%*s", INVERT, str, (int)game->width - (int)strlen(str), " ");
+    printf("%s %s%*s", INVERT, str, (int)game->width - (int)strlen(str) - 1, " ");
     gotoxy(game->height - 3, (int)strlen(str) + 2);
     scanf("%d", var_addr);
 }
@@ -636,6 +639,7 @@ void Game_startMainLoop(Game *game)
     Game_render(game);
 
     char ch = getch();
+    fflush(stdin);
 
     int gameS = 0;
 
