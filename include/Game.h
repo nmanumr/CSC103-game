@@ -544,7 +544,7 @@ void Game_renderDrawn(Game *game)
     gotoxy(game->height, 0);
 }
 
-void Game_RenderTurn(Game *game)
+void Game_renderTurn(Game *game)
 {
     gotoxy(1, game->width - 10);
     if (game->board.turn == 'X')
@@ -588,6 +588,7 @@ void Game_render(Game *game)
 
     Game_renderBoard(game);
     Game_renderKeyMap(game);
+    Game_renderTurn(game);
 }
 
 /**
@@ -620,7 +621,7 @@ void sizeFix(Game *game)
         game->width = w.ws_col;
         clear();
         Game_renderHeader(game);
-        Game_RenderTurn(game);
+        Game_renderTurn(game);
         Game_renderBoard(game);
         Game_renderKeyMap(game);
     }
@@ -632,8 +633,6 @@ void sizeFix(Game *game)
 void Game_startMainLoop(Game *game)
 {
     Game_render(game);
-
-    Game_RenderTurn(game);
 
     char ch = getch();
 
@@ -668,7 +667,7 @@ void Game_startMainLoop(Game *game)
             {
                 Board_mark(&game->board);
                 Game_renderBoard(game);
-                Game_RenderTurn(game);
+                Game_renderTurn(game);
             }
             break;
         }
@@ -691,7 +690,7 @@ void Game_startMainLoop(Game *game)
         {
             markBestMove(&game->board, game->height, game->width);
             Game_renderBoard(game);
-            Game_RenderTurn(game);
+            Game_renderTurn(game);
 
             continue;
         }
