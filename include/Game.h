@@ -52,42 +52,40 @@ void markPartialRow(Board *board, int row, int isVertical)
     }
 }
 
+int isRowPartialComplete(Board *board, int row, int isVertical, char lastMark)
+{
+    int empty = 0;
+
+    for (j = 0; j < board->size; j++)
+    {
+        Cell cell = Board_getCellFromXY(*board, isVertical ? j : row, isVertical ? row : j);
+        if (cell.isEmpty)
+            ++empty;
+
+        else if (lastMark == ' ' && cell.mark != ' ')
+            lastMark = cell.mark;
+
+        else if (cell.mark != ' ' && cell.mark != lastMark)
+        {
+            empty = 0;
+            break;
+        }
+    }
+
+    return empty;
+}
+
 /**
  * Find partial complete row/col and mark it
  */
-int getPartialCompleteRow(Board *board, int isVertical)
+int getPartialCompleteRow(Board *board, int isVertical, char lastMark)
 {
     for (i = 0; i < board->size; i++)
-    {
-        char lastMark = Board_getCellFromXY(*board, isVertical ? 0 : i, isVertical ? i : 0).mark;
-
-        int empty = 0;
-
-        for (j = 0; j < board->size; j++)
-        {
-            Cell cell = Board_getCellFromXY(*board, isVertical ? j : i, isVertical ? i : j);
-            if (cell.isEmpty)
-                ++empty;
-
-            else if (lastMark == ' ' && cell.mark != ' ')
-                lastMark = cell.mark;
-
-            else if (cell.mark != ' ' && cell.mark != lastMark)
-            {
-                empty = 0;
-                break;
-            }
-
-            if (empty > 1)
-                break;
-        }
-
-        if (empty == 1)
+        if (isRowPartialComplete(board, i, isVertical, lastMark) == 1)
         {
             markPartialRow(board, i, isVertical);
             return 1;
         }
-    }
 
     return 0;
 }
@@ -112,9 +110,8 @@ void markPartialDiagonal(Board *board, int isPrinciple)
 /**
  * Find partial complete diagonal and mark it
  */
-int markPartialCompleteDiagnal(Board *board, int isPrinciple)
+int markPartialCompleteDiagnal(Board *board, int isPrinciple, char mark)
 {
-    char mark = Board_getCellFromXY(*board, isPrinciple ? 0 : board->size - 1, 0).mark;
     int empty = 0;
     for (i = 0; i < board->size; i++)
     {
@@ -219,7 +216,7 @@ int hasRowFork(Board *board, int num, int isVert)
 /**
  * Find and marks on any of the empty side
  */
-int markEmptySide(Board *board)
+int markEmptySide(Board *board, int forksOnly)
 {
     for (i = 1; i < board->size - 1; i++)
     {
@@ -236,24 +233,50 @@ int markEmptySide(Board *board)
             markCell(board, Board_getCellAddrsFromXY(*board, i, board->size - 1), board->turn);
 
         // top side
-        else if (Board_getCellFromXY(*board, i, 0).isEmpty)
+        else if (!forksOnly && Board_getCellFromXY(*board, i, 0).isEmpty)
             markCell(board, Board_getCellAddrsFromXY(*board, i, 0), board->turn);
 
         // left side
-        else if (Board_getCellFromXY(*board, 0, i).isEmpty)
+        else if (!forksOnly && Board_getCellFromXY(*board, 0, i).isEmpty)
             markCell(board, Board_getCellAddrsFromXY(*board, 0, i), board->turn);
 
         // right side
-        else if (Board_getCellFromXY(*board, board->size - 1, i).isEmpty)
+        else if (!forksOnly && Board_getCellFromXY(*board, board->size - 1, i).isEmpty)
             markCell(board, Board_getCellAddrsFromXY(*board, board->size - 1, i), board->turn);
 
         // bottom side
-        else if (Board_getCellFromXY(*board, i, board->size - 1).isEmpty)
+        else if (!forksOnly && Board_getCellFromXY(*board, i, board->size - 1).isEmpty)
             markCell(board, Board_getCellAddrsFromXY(*board, i, board->size - 1), board->turn);
 
         else
             continue;
         return 1;
+    }
+    return 0;
+}
+
+int isForkCell(Board *board, int x, int y, char player)
+{
+    if (isRowPartialComplete(board, y, 1, player) == 2 &&
+        isRowPartialComplete(board, x, 0, player) == 2 &&
+        Board_getCellFromXY(*board, x, y).isEmpty)
+        return 1;
+    return 0;
+}
+
+int markForkCell(Board *board, char player)
+{
+    int i, j;
+    for (i = 0; i < board->size; i++)
+    {
+        for (j = 0; j < board->size; j++)
+        {
+            if (isForkCell(board, j, i, player))
+            {
+                markCell(board, Board_getCellAddrsFromXY(*board, j, i), board->turn);
+                return 1;
+            }
+        }
     }
     return 0;
 }
@@ -265,41 +288,58 @@ void markBestMove(Board *board, int height, int width)
 {
     Cell centerCell = board->cells[(board->size * board->size - 1) / 2];
 
-    // 1/2. Win or block winning rows/cols
-    if (getPartialCompleteRow(board, 0))
+    // Win or block winning rows/cols
+    if (getPartialCompleteRow(board, 0, 'O'))
         return;
-    else if (getPartialCompleteRow(board, 1))
-        return;
-
-    // 1/2. Win or block winning digonals
-    else if (markPartialCompleteDiagnal(board, 1))
-        return;
-    else if (markPartialCompleteDiagnal(board, 0))
+    else if (getPartialCompleteRow(board, 1, 'O'))
         return;
 
-    // TODO: 3/4. fork or block fork
+    else if (getPartialCompleteRow(board, 0, 'X'))
+        return;
+    else if (getPartialCompleteRow(board, 1, 'X'))
+        return;
 
-    // 5. take center
+    // Win or block winning digonals
+    else if (markPartialCompleteDiagnal(board, 1, 'O'))
+        return;
+    else if (markPartialCompleteDiagnal(board, 0, 'O'))
+        return;
+
+    else if (markPartialCompleteDiagnal(board, 1, 'X'))
+        return;
+    else if (markPartialCompleteDiagnal(board, 0, 'X'))
+        return;
+
+    // improve forks checking
+
+    // take center
     else if (centerCell.isEmpty)
     {
         Cell_mark(&board->cells[(board->size * board->size - 1) / 2], board->turn);
         Board_toggleTurn(board);
     }
 
-    else if (centerCell.mark == 'O' && markEmptySide(board))
+    else if (centerCell.mark == 'O' && markEmptySide(board, 1))
         return;
 
-    // 6. take opposite corner
+    // take opposite corner
     else if (markOppositeEmptyCorner(board))
         return;
 
-    // 7. take empty corner
+    // take empty corner
     else if (markEmptyCorner(board))
         return;
 
-    // 8. take empty side
+    // fork
+    else if (markForkCell(board, 'O'))
+        return;
+    // block fork
+    else if (markForkCell(board, 'X'))
+        return;
+
+    // take empty side
     else
-        markEmptySide(board);
+        markEmptySide(board, 0);
 }
 
 //////////////
