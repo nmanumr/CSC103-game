@@ -43,7 +43,7 @@ This techinques is also very similar to Corner First but with a little order shi
 
 ## TODO
 
-* [ ] Refector code to seperate rendering, game and autoplyaer logic from `include/Game.h`
+* [ ] Refector code to seperate rendering, game and autoplayer logic from `include/Game.h`
 * [ ] Autoplayer support for `nxn` boards
 * [ ] (TBD) move to `ncurses` lib
 
