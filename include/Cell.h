@@ -1,3 +1,5 @@
+#pragma once
+
 typedef struct
 {
     int isEmpty;
@@ -8,30 +10,14 @@ typedef struct
 /**
  * Cell Constrctutor
  */
-Cell Cell_init()
-{
-    Cell cell = {.isEmpty = 1, .mark = ' ', .isHovered = 0};
-    return cell;
-}
+Cell Cell_init();
 
 /**
  * Marks a cell with X or O and set it as non-empty
  */
-int Cell_mark(Cell *cell, char mark)
-{
-    if (cell->isEmpty)
-    {
-        cell->mark = mark;
-        cell->isEmpty = 0;
-        return 1;
-    }
-    return 0;
-}
+int Cell_mark(Cell *cell, char mark);
 
 /**
  *  Mark cell hovered 
  */
-void Cell_hover(Cell *cell, int isHovered)
-{
-    cell->isHovered = isHovered;
-}
+void Cell_hover(Cell *cell, int isHovered);
