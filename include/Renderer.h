@@ -16,6 +16,41 @@
 #define gotoxy(y, x) fprintf(stdout, "\033[%d;%dH", (y), (x))
 #define clear() fprintf(stdout, "\033[2J")
 
+#define DRAW_L1 "\e[34m ██████╗ ██████╗  █████╗ ██╗    ██╗ \e[0m"
+#define DRAW_L2 "\e[34m ██╔══██╗██╔══██╗██╔══██╗██║    ██║ \e[0m"
+#define DRAW_L3 "\e[34m ██║  ██║██████╔╝███████║██║ █╗ ██║ \e[0m"
+#define DRAW_L4 "\e[34m ██║  ██║██╔══██╗██╔══██║██║███╗██║ \e[0m"
+#define DRAW_L5 "\e[34m ██████╔╝██║  ██║██║  ██║╚███╔███╔╝ \e[0m"
+#define DRAW_L6 "\e[34m ╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═╝ ╚══╝╚══╝  \e[0m"
+
+#define WONL1 "\e[34m██╗    ██╗ ██████╗ ███╗   ██╗\e[0m"
+#define WONL2 "\e[34m██║    ██║██╔═══██╗████╗  ██║\e[0m"
+#define WONL3 "\e[34m██║ █╗ ██║██║   ██║██╔██╗ ██║\e[0m"
+#define WONL4 "\e[34m██║███╗██║██║   ██║██║╚██╗██║\e[0m"
+#define WONL5 "\e[34m╚███╔███╔╝╚██████╔╝██║ ╚████║\e[0m"
+#define WONL6 "\e[34m ╚══╝╚══╝  ╚═════╝ ╚═╝  ╚═══╝\e[0m"
+
+#define XL1 "\e[31m ██╗  ██╗\e[0m"
+#define XL2 "\e[31m ╚██╗██╔╝\e[0m"
+#define XL3 "\e[31m  ╚███╔╝ \e[0m"
+#define XL4 "\e[31m  ██╔██╗ \e[0m"
+#define XL5 "\e[31m ██╔╝ ██╗\e[0m"
+#define XL6 "\e[31m ╚═╝  ╚═╝\e[0m"
+
+#define OL1 "\e[33m ██████╗ \e[0m"
+#define OL2 "\e[33m██╔═══██╗\e[0m"
+#define OL3 "\e[33m██║   ██║\e[0m"
+#define OL4 "\e[33m██║   ██║\e[0m"
+#define OL5 "\e[33m╚██████╔╝\e[0m"
+#define OL6 "\e[33m ╚═════╝ \e[0m"
+
+#define TTT1 "\e[31m██████████╗ \e[33m██████████╗     \e[34m██████████╗   ██████╗\e[0m"
+#define TTT2 "\e[31m╚═══██╔═══╝ \e[33m╚═══██╔═══╝     \e[34m╚═══██╔═══╝   ██╔═══╝\e[0m"
+#define TTT3 "\e[31m    ██║██╗ ████╗\e[33m██║██████╗ ████╗\e[34m██║██████╗██████╗\e[0m"
+#define TTT4 "\e[31m    ██║██║██╔══╝\e[33m██║██║ ██║██╔══╝\e[34m██║██║ ██║██╔═══╝\e[0m"
+#define TTT5 "\e[31m    ██║██║╚████╗\e[33m██║███████╗████╗\e[34m██║██████║██████╗\e[0m"
+#define TTT6 "\e[31m    ╚═╝╚═╝ ╚═══╝\e[33m╚═╝╚══════╝╚═══╝\e[34m╚═╝╚═════╝╚═════╝\e[0m"
+
 /**
  *  Renders the header  
  */
@@ -59,15 +94,5 @@ void Game_clearDialog(Game *game);
  *  Renders the complete game 
  */
 void Game_render(Game *game);
-
-/**
- * Checks and return Current Game State
- * @return
- * 0 for Game Continued 
- * 1 for X WON
- * 2 for O WON
- * 3 for Game Draw
- */
-int GameState(Game *game);
 
 void sizeFix(Game *game);

@@ -218,26 +218,6 @@ void Game_render(Game *game)
     Game_renderTurn(game);
 }
 
-/**
- * Checks and return Current Game State
- * @return
- * 0 for Game Continued 
- * 1 for X WON
- * 2 for O WON
- * 3 for Game Draw
- */
-int GameState(Game *game)
-{
-    char win = Game_isWon(game);
-    if (win == 'X')
-        return 1;
-    if (win == 'O')
-        return 2;
-    if (Game_isDrawn(game))
-        return 3;
-    return 0;
-}
-
 void sizeFix(Game *game)
 {
     struct winsize w;
