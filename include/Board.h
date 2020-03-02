@@ -25,11 +25,6 @@ Cell Board_getCellFromXY(Board board, int x, int y);
 Cell *Board_getCellAddrsFromXY(Board board, int x, int y);
 
 /**
- *  Removes the hover mark
- */
-void Board_deselect(Board *board);
-
-/**
  *  mark cell hovered 
  */
 void Board_select(Board *board);

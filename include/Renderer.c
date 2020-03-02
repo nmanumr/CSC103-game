@@ -124,7 +124,8 @@ void Game_loop(Game *game)
         if (ch > '0' && ch <= '9')
         {
             int selected = Board_markAt(&game->board, ch - 49);
-            if (!selected){
+            if (!selected)
+            {
                 printf("Cell already marked\n: ");
                 shouldPrintMenu = 0;
             }
@@ -166,8 +167,25 @@ void Game_loop(Game *game)
             Game_renderBoard(game);
             Game_renderTurn(game);
             Game_renderMenu();
+
+            gameS = GameState(game);
+            if (gameS == 1)
+            {
+                Game_renderWon(game, 'X');
+                break;
+            }
+            else if (gameS == 2)
+            {
+                Game_renderWon(game, 'O');
+                break;
+            }
+            else if (gameS == 3)
+            {
+                Game_renderDrawn(game);
+                break;
+            }
         }
-        else if(shouldPrintMenu)
+        else if (shouldPrintMenu)
         {
             Game_renderMenu();
         }

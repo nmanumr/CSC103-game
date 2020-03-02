@@ -1,6 +1,6 @@
 # Tic Tac Toe
 
-Tic Tac Toe game written in pure C with computer autoplayer support. Tested with `gcc 8.3.0` on `Ubuntu 18.10`. This should work on all bash terminals, but only tested on `xtermjs`, `konsole`, `gnome-terminal`.
+Tic Tac Toe game written in pure C with computer autoplayer support. Tested with `gcc 8.3.0` on `Ubuntu 18.10`. This should work on all xterm terminals, but only tested on `xtermjs`, `konsole`, `gnome-terminal`.
 
 Online Demo: https://repl.it/@nmanumr/Tic-Tac-Toe
 
@@ -10,8 +10,8 @@ Online Demo: https://repl.it/@nmanumr/Tic-Tac-Toe
 # Compiling & running game
 make run
 
-# Compile
-make compile
+# Compiling & running game for xterm
+make run.xterm
 ```
 
 ## Autoplay Algorithm
