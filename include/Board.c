@@ -106,3 +106,14 @@ void Board_mark(Board *board)
     if (Cell_mark(&board->cells[board->selected], board->turn))
         Board_toggleTurn(board);
 }
+
+/**
+ * Mark the cell at pos
+ */
+int Board_markAt(Board *board, int pos)
+{
+    int selected = Cell_mark(&board->cells[pos], board->turn);
+    if (selected)
+        Board_toggleTurn(board);
+    return selected;
+}

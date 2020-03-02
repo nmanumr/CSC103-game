@@ -1,22 +1,36 @@
+#if !defined(XTERM)
 #include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <string.h>
-#include <sys/ioctl.h>
 
-// Required Files
-#include "Renderer.h"
 #include "Game.h"
+#include "Board.h"
+#include "Renderer.h"
+#include "autoplayer.h"
 
 int i, j;
 
-/**
- *  Renders the header  
- */
-void Game_renderHeader(Game *game)
+void Game_renderSplash(Game *game)
 {
-    gotoxy(0, 0);
-    printf("%s  Tic Tac Toe%*s%s", INVERT, game->width - 13, " ", RESET);
+    printf("%s\n", TTTN1);
+    printf("%s\n", TTTN2);
+    printf("%s\n", TTTN3);
+    printf("%s\n", TTTN4);
+    printf("%s\n", TTTN5);
+    printf("%s\n", TTTN6);
+    printf("%s\n", TTTN7);
+    printf("%s\n", TTTN8);
+    printf("%s\n", TTTN9);
+    printf("%s\n", TTTN10);
+    printf("%s\n", TTTN11);
+}
+
+void Game_renderWon(Game *game, char player)
+{
+    printf("\n\n%c Won\n\n", player);
+}
+
+void Game_renderDrawn(Game *game)
+{
+    printf("\n\nGame Draw\n\n");
 }
 
 /**
@@ -24,37 +38,32 @@ void Game_renderHeader(Game *game)
  */
 void Game_renderBoard(Game *game)
 {
-    int top = (game->height - 2) / 2 - game->board.size;
-    int left = game->width / 2 - (game->board.size / 2) * 4;
-    gotoxy(top, left);
-
-    for (i = 0; i < game->board.size; i++)
+    printf("\n");
+    for (i = 0; i < game->board.size * 2; i++)
     {
-        for (j = 0; j < game->board.size; j++)
+        if (i % 2 == 0)
         {
-            if (j == 0)
-                printf("%s───", i == 0 ? "┌" : "├");
-            else
-                printf("%s───", i == 0 ? "┬" : "┼");
+            for (j = 0; j < game->board.size; j++)
+            {
+                if (j == 0)
+                    printf("%s───", i == 0 ? "┌" : "├");
+                else
+                    printf("%s───", i == 0 ? "┬" : "┼");
+            }
+            printf("%s\n", i == 0 ? "┐" : "┤");
         }
-        printf("%s\n", i == 0 ? "┐" : "┤");
-        top++;
-        gotoxy(top, left);
-
-        for (j = 0; j < game->board.size; j++)
+        else
         {
-            Cell cell = Board_getCellFromXY(game->board, j, i);
-
-            if (cell.mark == 'X')
-                printf("│ %s%sX%s ", (cell.isHovered ? INVERT : RESET), RED_FG, RESET);
-            else if (cell.mark == 'O')
-                printf("│ %s%sO%s ", (cell.isHovered ? INVERT : RESET), YLOW_FG, RESET);
-            else
-                printf("│ %s%c%s ", (cell.isHovered ? INVERT : RESET), cell.mark, RESET);
+            for (j = 0; j < game->board.size; j++)
+            {
+                Cell cell = Board_getCellFromXY(game->board, j, i / 2);
+                if (cell.mark == 'O' || cell.mark == 'X')
+                    printf("│ %c ", cell.mark);
+                else
+                    printf("│ %d ", i / 2 * game->board.size + j + 1);
+            }
+            printf("│\n");
         }
-        printf("│\n");
-        top++;
-        gotoxy(top, left);
     }
 
     for (j = 0; j < game->board.size; j++)
@@ -64,131 +73,17 @@ void Game_renderBoard(Game *game)
         else
             printf("┴───");
     }
-    printf("┘\n");
-    gotoxy(game->height, 0);
+    printf("┘\n\n");
 }
 
-/**
- *  Renders Footer/KeyNotes 
- */
-void Game_renderKeyMap(Game *game)
+void Game_renderMenu()
 {
-    gotoxy(game->height - 1, 0);
-    printf("%s q %s Quit Game\t"
-           "%s r %s Restart Game\t"
-           "%s Arrow Keys %s Move Selection\t"
-           "%s space %s Make Selection\n",
-           INVERT, RESET, INVERT, RESET, INVERT, RESET, INVERT, RESET);
-}
-/**
- *  Renders the Enteries on table/board 
- */
-void Game_renderInputDialog(Game *game, char str[], int *var_addr)
-{
-    gotoxy(game->height - 3, 0);
-    printf("%s %s%*s", INVERT, str, (int)game->width - (int)strlen(str) - 1, " ");
-    gotoxy(game->height - 3, (int)strlen(str) + 2);
-    scanf("%d", var_addr);
-}
-
-void Game_renderSplash(Game *game)
-{
-    int top = (game->height - 2) / 2 - 4;
-    int left = (game->width) / 2 - 26;
-    gotoxy(top - 1, left);
-    printf("╔═══════════════════════════════════════════════════╗");
-    gotoxy(top, left);
-    printf("║ %s ║", TTT1);
-    gotoxy(top + 1, left);
-    printf("║ %s ║", TTT2);
-    gotoxy(top + 2, left);
-    printf("║ %s ║", TTT3);
-    gotoxy(top + 3, left);
-    printf("║ %s ║", TTT4);
-    gotoxy(top + 4, left);
-    printf("║ %s ║", TTT5);
-    gotoxy(top + 5, left);
-    printf("║ %s ║", TTT6);
-    gotoxy(top + 6, left);
-    printf("╟───────────────────────────────────────────────────╢");
-    gotoxy(top + 7, left);
-    printf("║ \e[2mCreated by:\e[0m                  \e[1m\e[4mAmeer Hamza Naveed\e[0m \e[2m&\e[0m ║");
-    gotoxy(top + 8, left);
-    printf("║                                     \e[1m\e[4mNauman Umer\e[0m   ║");
-    gotoxy(top + 9, left);
-    printf("╚═══════════════════════════════════════════════════╝");
-    gotoxy(game->height, 0);
-}
-
-/**
- *  Renders Mark won Splash 
- */
-void Game_renderWon(Game *game, char player)
-{
-    int top = (game->height - 2) / 2 - 3;
-    int left = (game->width) / 2 - 20;
-    gotoxy(top - 1, left);
-    printf("╔════════════════════════════════════════════╗");
-    gotoxy(top, left);
-    printf("║ %s    %s ║", player == 'X' ? XL1 : OL1, WONL1);
-    gotoxy(top + 1, left);
-    printf("║ %s    %s ║", player == 'X' ? XL2 : OL2, WONL2);
-    gotoxy(top + 2, left);
-    printf("║ %s    %s ║", player == 'X' ? XL3 : OL3, WONL3);
-    gotoxy(top + 3, left);
-    printf("║ %s    %s ║", player == 'X' ? XL4 : OL4, WONL4);
-    gotoxy(top + 4, left);
-    printf("║ %s    %s ║", player == 'X' ? XL5 : OL5, WONL5);
-    gotoxy(top + 5, left);
-    printf("║ %s    %s ║", player == 'X' ? XL6 : OL6, WONL6);
-    gotoxy(top + 6, left);
-    printf("╚════════════════════════════════════════════╝");
-    gotoxy(game->height, 0);
-}
-
-/**
- *  renders Drawn Splash 
- */
-void Game_renderDrawn(Game *game)
-{
-    int top = (game->height - 2) / 2 - 3;
-    int left = (game->width) / 2 - 18;
-    gotoxy(top - 1, left);
-    printf("╔══════════════════════════════════════╗");
-    gotoxy(top, left);
-    printf("║ %s ║", DRAW_L1);
-    gotoxy(top + 1, left);
-    printf("║ %s ║", DRAW_L2);
-    gotoxy(top + 2, left);
-    printf("║ %s ║", DRAW_L3);
-    gotoxy(top + 3, left);
-    printf("║ %s ║", DRAW_L4);
-    gotoxy(top + 4, left);
-    printf("║ %s ║", DRAW_L5);
-    gotoxy(top + 5, left);
-    printf("║ %s ║", DRAW_L6);
-    gotoxy(top + 6, left);
-    printf("╚══════════════════════════════════════╝");
-    gotoxy(game->height, 0);
+    printf("1-9: For selection\nq: Quit Game\n: ");
 }
 
 void Game_renderTurn(Game *game)
 {
-    gotoxy(1, game->width - 10);
-    if (game->board.turn == 'X')
-        printf("%s%s%sTurn: X %s", INVERT, BLINK, RED_BG, RESET);
-    else
-        printf("%s%s%sTurn: O %s", INVERT, BLINK, YLOW_BG, RESET);
-    gotoxy(game->height, 0);
-}
-
-/**
- *  clears size input dialog
- */
-void Game_clearDialog(Game *game)
-{
-    gotoxy(game->height - 3, 0);
-    printf("%s%*s", RESET, game->width, " ");
+    printf("Turn: %c\n", game->board.turn);
 }
 
 /**
@@ -196,40 +91,89 @@ void Game_clearDialog(Game *game)
  */
 void Game_render(Game *game)
 {
-    clear();
     Game_renderSplash(game);
-    int size, compPlayer = 0;
-    Game_renderInputDialog(game, "Enter size of game: ", &size);
-    Game_clearDialog(game);
-    // Asking for computer player
-    if (size == 3)
-        Game_renderInputDialog(game, "Do you wanna play again computer (0/1): ", &compPlayer);
+    int size = 3, compPlayer = 0;
+    // printf("\n\nEnter size of the game: ");
+    // scanf("%d", &size);
 
-    clear();
-    Game_renderHeader(game);
+    if (size == 3)
+    {
+        printf("Do you wanna play again computer (0/1): ");
+        scanf("%d", &compPlayer);
+    }
 
     game->comPlayer = compPlayer == 1 ? 1 : 0;
     game->board = Board_init(size);
 
-    Board_select(&game->board);
-
     Game_renderBoard(game);
-    Game_renderKeyMap(game);
     Game_renderTurn(game);
+    Game_renderMenu();
 }
 
-void sizeFix(Game *game)
+void Game_loop(Game *game)
 {
-    struct winsize w;
-    ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
-    if ((game->height != w.ws_row) || (game->width != w.ws_col))
+    Game_render(game);
+
+    int ch, gameS = 0, shouldPrintMenu = 1;
+
+    fflush(stdin);
+    scanf(" %c", &ch);
+
+    do
     {
-        game->height = w.ws_row;
-        game->width = w.ws_col;
-        clear();
-        Game_renderHeader(game);
-        Game_renderTurn(game);
-        Game_renderBoard(game);
-        Game_renderKeyMap(game);
-    }
+        if (ch > '0' && ch <= '9')
+        {
+            int selected = Board_markAt(&game->board, ch - 49);
+            if (!selected){
+                printf("Cell already marked\n: ");
+                shouldPrintMenu = 0;
+            }
+            else
+            {
+                Game_renderBoard(game);
+                Game_renderTurn(game);
+            }
+        }
+        else if (ch == 'q')
+        {
+            break;
+        }
+        else
+        {
+            printf("Invalid input, try again \n: ");
+        }
+
+        gameS = GameState(game);
+        if (gameS == 1)
+        {
+            Game_renderWon(game, 'X');
+            break;
+        }
+        else if (gameS == 2)
+        {
+            Game_renderWon(game, 'O');
+            break;
+        }
+        else if (gameS == 3)
+        {
+            Game_renderDrawn(game);
+            break;
+        }
+
+        if (game->board.turn == 'O' && gameS == 0 && game->comPlayer)
+        {
+            markBestMove(&game->board, game->height, game->width);
+            Game_renderBoard(game);
+            Game_renderTurn(game);
+            Game_renderMenu();
+        }
+        else if(shouldPrintMenu)
+        {
+            Game_renderMenu();
+        }
+
+        scanf(" %c", &ch);
+        shouldPrintMenu = 1;
+    } while (1);
 }
+#endif

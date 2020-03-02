@@ -1,12 +1,17 @@
 #include <time.h>
-#include <sys/ioctl.h>
 
 // Required Files
 #include "Board.h"
 #include "Game.h"
-#include "conio.h"
 #include "autoplayer.h"
+
+#ifdef XTERM
+#include <sys/ioctl.h>
+#include <unistd.h>
+#include "Rendererx.h"
+#else
 #include "Renderer.h"
+#endif
 
 int i, j;
 
@@ -17,15 +22,14 @@ Game Game_init()
 {
     srand(time(0));
     Game game = {};
-    
 
-    #ifndef XTERM
-    // To get current window size
-    struct winsize w;
-    ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
-    game.height = w.ws_row;
-    game.width = w.ws_col;
-    #endif
+#ifdef XTERM
+        // To get current window size
+        struct winsize w;
+        ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
+        game.height = w.ws_row;
+        game.width = w.ws_col;
+#endif
 
     return game;
 }
@@ -168,71 +172,5 @@ int Game_isDrawn(Game *game)
  */
 void Game_startMainLoop(Game *game)
 {
-    Game_render(game);
-
-    char ch = getch();
-    fflush(stdin);
-
-    int gameS = 0;
-
-    while (ch != 'q' && ch != EOF)
-    {
-        sizeFix(game);
-
-        switch (ch)
-        {
-        // Reload/Restart Game
-        case 'r':
-            Game_render(game);
-            break;
-
-        // Handle movements
-        case 'A':
-        case 'B':
-        case 'C':
-        case 'D':
-            if (gameS == 0)
-            {
-                Board_move(&game->board, ch);
-                Game_renderBoard(game);
-            }
-            break;
-
-        // Mark Selection
-        case ' ':
-            if (gameS == 0)
-            {
-                Board_mark(&game->board);
-                Game_renderBoard(game);
-                Game_renderTurn(game);
-            }
-            break;
-        }
-
-        gameS = GameState(game);
-        switch (gameS)
-        {
-        case 1:
-            Game_renderWon(game, 'X');
-            break;
-        case 2:
-            Game_renderWon(game, 'O');
-            break;
-        case 3:
-            Game_renderDrawn(game);
-            break;
-        }
-
-        if (game->board.turn == 'O' && gameS == 0 && game->comPlayer)
-        {
-            markBestMove(&game->board, game->height, game->width);
-            Game_renderBoard(game);
-            Game_renderTurn(game);
-
-            continue;
-        }
-
-        ch = getch();
-        fflush(stdin);
-    }
+    Game_loop(game);
 }

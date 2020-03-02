@@ -48,3 +48,8 @@ void Board_toggleTurn(Board *board);
  * Mark the current selected cell
  */
 void Board_mark(Board *board);
+
+/**
+ * Mark the cell at pos
+ */
+int Board_markAt(Board *board, int pos);
