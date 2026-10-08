@@ -30,6 +30,11 @@ Cell *Board_getCellAddrsFromXY(Board board, int x, int y);
 void Board_select(Board *board);
 
 /**
+ * Moves the selection to the cell at pos
+ */
+void Board_selectAt(Board *board, int pos);
+
+/**
  * Moves the current selection
  */
 void Board_move(Board *board, char dir);

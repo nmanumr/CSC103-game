@@ -17,6 +17,13 @@
 #define gotoxy(y, x) fprintf(stdout, "\033[%d;%dH", (y), (x))
 #define clear() fprintf(stdout, "\033[2J")
 
+// mouse reporting (SGR mode)
+#define MOUSE_ON "\e[?1000h\e[?1006h"
+#define MOUSE_OFF "\e[?1000l\e[?1006l"
+
+// key code returned by Game_readKey for a left click
+#define KEY_CLICK 1
+
 #define DRAW_L1 "\e[34m ██████╗ ██████╗  █████╗ ██╗    ██╗ \e[0m"
 #define DRAW_L2 "\e[34m ██╔══██╗██╔══██╗██╔══██╗██║    ██║ \e[0m"
 #define DRAW_L3 "\e[34m ██║  ██║██████╔╝███████║██║ █╗ ██║ \e[0m"
@@ -95,6 +102,21 @@ void Game_clearDialog(Game *game);
  *  Renders the complete game 
  */
 void Game_render(Game *game);
+
+/**
+ *  Restarts the game with the last used settings
+ */
+void Game_restart(Game *game);
+
+/**
+ *  Reads a key, decoding arrow keys and mouse clicks
+ */
+char Game_readKey(int *mouseX, int *mouseY);
+
+/**
+ *  Returns the cell index at screen position x, y or -1
+ */
+int Game_cellAt(Game *game, int x, int y);
 
 void Game_loop(Game *game);
 

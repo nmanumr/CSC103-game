@@ -64,6 +64,16 @@ void Board_select(Board *board)
 }
 
 /**
+ * Moves the selection to the cell at pos
+ */
+void Board_selectAt(Board *board, int pos)
+{
+    Board_deselect(board);
+    board->selected = pos;
+    Board_select(board);
+}
+
+/**
  * Moves the current selection
  */
 void Board_move(Board *board, char dir)
